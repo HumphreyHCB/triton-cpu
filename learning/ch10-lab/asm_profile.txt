@@ -1,0 +1,1202 @@
+ Samples |	Source code & Disassembly of tmpwoo6whur.so for cycles:P (25518 samples, percent: local period)
+---------------------------------------------------------------------------------------------------------------
+         :
+         :
+         :
+         : 3    Disassembly of section .text:
+         :
+         : 5    0000000000001180 <smooth5_kernel>:
+         : 6    import triton
+         : 7    import triton.language as tl
+         :
+         :
+         : 10   @triton.jit
+         : 11   def smooth5_kernel(src, dst, N: tl.constexpr, BLOCK: tl.constexpr):
+       0 :   1180:   sub    rsp,0x7a8
+         : 13   i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   1187:   vmovd  xmm0,edx
+       0 :   118b:   shl    edx,0x8
+         : 16   interior = (i >= 2) & (i < N - 2)
+         :
+         : 18   a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   118e:   movsxd rax,edx
+         : 20   i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       4 :   1191:   vpbroadcastd ymm0,xmm0
+      71 :   1196:   vpslld ymm2,ymm0,0x8
+         : 23   interior = (i >= 2) & (i < N - 2)
+      31 :   119b:   vpaddd ymm14,ymm2,YMMWORD PTR [rip+0x263d]        # 37e0 <_fini+0xdf0>
+       1 :   11a3:   vpbroadcastd ymm0,DWORD PTR [rip+0x2654]        # 3800 <_fini+0xe10>
+       0 :   11ac:   vpor   ymm13,ymm2,YMMWORD PTR [rip+0x260c]        # 37c0 <_fini+0xdd0>
+       0 :   11b4:   vpor   ymm12,ymm2,YMMWORD PTR [rip+0x25e4]        # 37a0 <_fini+0xdb0>
+       2 :   11bc:   vpor   ymm11,ymm2,YMMWORD PTR [rip+0x25bc]        # 3780 <_fini+0xd90>
+       1 :   11c4:   vpor   ymm10,ymm2,YMMWORD PTR [rip+0x2594]        # 3760 <_fini+0xd70>
+       0 :   11cc:   vpor   ymm9,ymm2,YMMWORD PTR [rip+0x256c]        # 3740 <_fini+0xd50>
+      29 :   11d4:   vpor   ymm8,ymm2,YMMWORD PTR [rip+0x2544]        # 3720 <_fini+0xd30>
+       5 :   11dc:   vpor   ymm7,ymm2,YMMWORD PTR [rip+0x251c]        # 3700 <_fini+0xd10>
+       1 :   11e4:   vpor   ymm6,ymm2,YMMWORD PTR [rip+0x24f4]        # 36e0 <_fini+0xcf0>
+      22 :   11ec:   vpor   ymm5,ymm2,YMMWORD PTR [rip+0x24cc]        # 36c0 <_fini+0xcd0>
+      25 :   11f4:   vpor   ymm4,ymm2,YMMWORD PTR [rip+0x24a4]        # 36a0 <_fini+0xcb0>
+       3 :   11fc:   vpor   ymm3,ymm2,YMMWORD PTR [rip+0x247c]        # 3680 <_fini+0xc90>
+       2 :   1204:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2454]        # 3660 <_fini+0xc70>
+      17 :   120c:   vmovdqu YMMWORD PTR [rsp+0x780],ymm2
+       3 :   1215:   vpminud ymm15,ymm14,ymm0
+       6 :   121a:   vpcmpeqd ymm15,ymm14,ymm15
+      19 :   121f:   vpminud ymm14,ymm13,ymm0
+       7 :   1224:   vpcmpeqd ymm14,ymm13,ymm14
+      15 :   1229:   vpminud ymm13,ymm12,ymm0
+       7 :   122e:   vpcmpeqd ymm13,ymm12,ymm13
+      21 :   1233:   vpminud ymm12,ymm11,ymm0
+       4 :   1238:   vpcmpeqd ymm11,ymm11,ymm12
+       9 :   123d:   vmovdqu YMMWORD PTR [rsp+0x180],ymm11
+      48 :   1246:   vpminud ymm11,ymm10,ymm0
+       4 :   124b:   vpcmpeqd ymm11,ymm10,ymm11
+       1 :   1250:   vpminud ymm10,ymm9,ymm0
+       1 :   1255:   vpcmpeqd ymm10,ymm9,ymm10
+       1 :   125a:   vpminud ymm9,ymm8,ymm0
+       4 :   125f:   vpcmpeqd ymm9,ymm8,ymm9
+       2 :   1264:   vpminud ymm8,ymm7,ymm0
+       1 :   1269:   vpcmpeqd ymm8,ymm8,ymm7
+      28 :   126d:   vpminud ymm7,ymm6,ymm0
+       1 :   1272:   vpcmpeqd ymm7,ymm6,ymm7
+       3 :   1276:   vpminud ymm6,ymm5,ymm0
+       1 :   127b:   vpcmpeqd ymm5,ymm5,ymm6
+       5 :   127f:   vmovdqu YMMWORD PTR [rsp-0x60],ymm5
+      53 :   1285:   vpminud ymm5,ymm4,ymm0
+       0 :   128a:   vpcmpeqd ymm4,ymm4,ymm5
+       0 :   128e:   vmovdqu YMMWORD PTR [rsp-0x80],ymm4
+      43 :   1294:   vpminud ymm4,ymm3,ymm0
+       1 :   1299:   vpcmpeqd ymm3,ymm3,ymm4
+         : 66   b = tl.load(src + i - 1, mask=interior, other=0.0)
+         : 67   c = tl.load(src + i, mask=interior, other=0.0)
+         : 68   d = tl.load(src + i + 1, mask=interior, other=0.0)
+         : 69   e = tl.load(src + i + 2, mask=interior, other=0.0)
+         :
+         : 71   value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   129d:   vbroadcastss ymm4,DWORD PTR [rip+0x255e]        # 3804 <_fini+0xe14>
+       0 :   12a6:   vmovdqu YMMWORD PTR [rsp-0x20],ymm3
+         : 74   interior = (i >= 2) & (i < N - 2)
+      24 :   12ac:   vpminud ymm3,ymm1,ymm0
+       1 :   12b1:   vpcmpeqd ymm5,ymm1,ymm3
+       0 :   12b5:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2383]        # 3640 <_fini+0xc50>
+       0 :   12bd:   vpminud ymm3,ymm1,ymm0
+       7 :   12c2:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   12c6:   vmovdqu YMMWORD PTR [rsp+0x40],ymm1
+      24 :   12cc:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x234c]        # 3620 <_fini+0xc30>
+       2 :   12d4:   vpminud ymm3,ymm1,ymm0
+       1 :   12d9:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   12dd:   vmovdqu YMMWORD PTR [rsp-0x40],ymm1
+      30 :   12e3:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2315]        # 3600 <_fini+0xc10>
+       1 :   12eb:   vpminud ymm3,ymm1,ymm0
+       0 :   12f0:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   12f4:   vmovdqu YMMWORD PTR [rsp+0x60],ymm1
+      19 :   12fa:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x22de]        # 35e0 <_fini+0xbf0>
+       4 :   1302:   vpminud ymm3,ymm1,ymm0
+       0 :   1307:   vpcmpeqd ymm1,ymm1,ymm3
+       1 :   130b:   vmovdqu YMMWORD PTR [rsp],ymm1
+      29 :   1310:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x22a8]        # 35c0 <_fini+0xbd0>
+       1 :   1318:   vpminud ymm3,ymm1,ymm0
+       0 :   131d:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   1321:   vmovdqu YMMWORD PTR [rsp+0x80],ymm1
+      26 :   132a:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x226e]        # 35a0 <_fini+0xbb0>
+       3 :   1332:   vpminud ymm3,ymm1,ymm0
+       0 :   1337:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   133b:   vmovdqu YMMWORD PTR [rsp+0x20],ymm1
+      36 :   1341:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2237]        # 3580 <_fini+0xb90>
+       1 :   1349:   vpminud ymm3,ymm1,ymm0
+       0 :   134e:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   1352:   vmovdqu YMMWORD PTR [rsp+0xa0],ymm1
+      25 :   135b:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x21fd]        # 3560 <_fini+0xb70>
+       2 :   1363:   vpminud ymm3,ymm1,ymm0
+       0 :   1368:   vpcmpeqd ymm6,ymm1,ymm3
+       0 :   136c:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x21cc]        # 3540 <_fini+0xb50>
+      13 :   1374:   vpminud ymm3,ymm1,ymm0
+       0 :   1379:   vpcmpeqd ymm1,ymm1,ymm3
+       3 :   137d:   vmovdqu YMMWORD PTR [rsp+0x400],ymm1
+      38 :   1386:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2192]        # 3520 <_fini+0xb30>
+       2 :   138e:   vpminud ymm3,ymm1,ymm0
+       1 :   1393:   vpcmpeqd ymm12,ymm1,ymm3
+       1 :   1397:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2161]        # 3500 <_fini+0xb10>
+       0 :   139f:   vpminud ymm3,ymm1,ymm0
+      11 :   13a4:   vpcmpeqd ymm1,ymm1,ymm3
+       8 :   13a8:   vmovdqu YMMWORD PTR [rsp+0x1a0],ymm1
+      44 :   13b1:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2127]        # 34e0 <_fini+0xaf0>
+       6 :   13b9:   vpminud ymm3,ymm1,ymm0
+       1 :   13be:   vpcmpeqd ymm1,ymm1,ymm3
+       2 :   13c2:   vmovdqu YMMWORD PTR [rsp+0x440],ymm1
+      26 :   13cb:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x20ed]        # 34c0 <_fini+0xad0>
+       1 :   13d3:   vpminud ymm3,ymm1,ymm0
+       0 :   13d8:   vpcmpeqd ymm1,ymm1,ymm3
+       2 :   13dc:   vmovdqu YMMWORD PTR [rsp+0x1c0],ymm1
+      38 :   13e5:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x20b3]        # 34a0 <_fini+0xab0>
+       4 :   13ed:   vpminud ymm3,ymm1,ymm0
+       1 :   13f2:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   13f6:   vmovdqu YMMWORD PTR [rsp+0x460],ymm1
+      45 :   13ff:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2079]        # 3480 <_fini+0xa90>
+       1 :   1407:   vpminud ymm3,ymm1,ymm0
+       1 :   140c:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   1410:   vmovdqu YMMWORD PTR [rsp+0x6e0],ymm1
+      19 :   1419:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x203f]        # 3460 <_fini+0xa70>
+       2 :   1421:   vpminud ymm3,ymm1,ymm0
+       0 :   1426:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   142a:   vmovdqu YMMWORD PTR [rsp+0x6a0],ymm1
+      33 :   1433:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x2005]        # 3440 <_fini+0xa50>
+       2 :   143b:   vmovdqu YMMWORD PTR [rsp+0x160],ymm11
+       7 :   1444:   vmovdqu YMMWORD PTR [rsp+0x3e0],ymm15
+      17 :   144d:   vmovdqu YMMWORD PTR [rsp+0x3c0],ymm14
+      19 :   1456:   vmovdqu YMMWORD PTR [rsp+0xe0],ymm10
+      28 :   145f:   vmovdqu YMMWORD PTR [rsp+0x660],ymm12
+      24 :   1468:   vmovdqu YMMWORD PTR [rsp+0xc0],ymm8
+      36 :   1471:   vmovdqu YMMWORD PTR [rsp+0x140],ymm7
+      32 :   147a:   vmovdqu YMMWORD PTR [rsp+0x120],ymm5
+      28 :   1483:   vmovdqu YMMWORD PTR [rsp+0x3a0],ymm13
+      36 :   148c:   vmovdqu YMMWORD PTR [rsp+0x100],ymm9
+      32 :   1495:   vmovdqu YMMWORD PTR [rsp+0x680],ymm6
+      30 :   149e:   vpminud ymm3,ymm1,ymm0
+       0 :   14a3:   vpcmpeqd ymm1,ymm1,ymm3
+       0 :   14a7:   vmovdqu YMMWORD PTR [rsp+0x700],ymm1
+      36 :   14b0:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x1f68]        # 3420 <_fini+0xa30>
+       1 :   14b8:   vpminud ymm3,ymm1,ymm0
+       0 :   14bd:   vpcmpeqd ymm1,ymm1,ymm3
+         : 157  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   14c1:   vmaskmovps ymm3,ymm14,YMMWORD PTR [rdi+rax*4+0x18]
+      10 :   14c8:   vmovdqu YMMWORD PTR [rsp+0x6c0],ymm1
+         : 160  interior = (i >= 2) & (i < N - 2)
+      25 :   14d1:   vpor   ymm1,ymm2,YMMWORD PTR [rip+0x1f27]        # 3400 <_fini+0xa10>
+         : 162  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       0 :   14d9:   vmaskmovps ymm2,ymm11,YMMWORD PTR [rdi+rax*4+0x7c]
+         : 164  interior = (i >= 2) & (i < N - 2)
+     311 :   14e0:   vpminud ymm0,ymm1,ymm0
+       0 :   14e5:   vpcmpeqd ymm0,ymm1,ymm0
+         : 167  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       0 :   14e9:   vmaskmovps ymm1,ymm15,YMMWORD PTR [rdi+rax*4-0x4]
+       6 :   14f0:   vmovdqu YMMWORD PTR [rsp+0x720],ymm0
+         : 170  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      15 :   14f9:   vmaskmovps ymm0,ymm15,YMMWORD PTR [rdi+rax*4-0x8]
+         : 172  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1500:   vfmadd213ps ymm1,ymm4,ymm0
+         : 174  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       2 :   1505:   vmaskmovps ymm0,ymm13,YMMWORD PTR [rdi+rax*4+0x38]
+       5 :   150c:   vmovups YMMWORD PTR [rsp+0x640],ymm1
+         : 177  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      24 :   1515:   vmaskmovps ymm1,ymm14,YMMWORD PTR [rdi+rax*4+0x1c]
+         : 179  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   151c:   vfmadd213ps ymm1,ymm4,ymm3
+       2 :   1521:   vmovups YMMWORD PTR [rsp+0x620],ymm1
+         : 182  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      18 :   152a:   vmaskmovps ymm1,ymm13,YMMWORD PTR [rdi+rax*4+0x3c]
+       4 :   1531:   vmovups ymm13,YMMWORD PTR [rsp+0x6e0]
+         : 185  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   153a:   vfmadd213ps ymm1,ymm4,ymm0
+         : 187  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      34 :   153f:   vmaskmovps ymm0,ymm11,YMMWORD PTR [rdi+rax*4+0x78]
+      11 :   1546:   vmovaps ymm11,ymm4
+       9 :   154a:   vmovups YMMWORD PTR [rsp+0x600],ymm1
+      29 :   1553:   vmovups ymm1,YMMWORD PTR [rsp+0x180]
+         : 192  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   155c:   vfmadd213ps ymm2,ymm4,ymm0
+         : 194  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      33 :   1561:   vmaskmovps ymm0,ymm9,YMMWORD PTR [rdi+rax*4+0xb8]
+      26 :   156b:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x58]
+         : 197  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       1 :   1572:   vmaskmovps ymm1,ymm1,YMMWORD PTR [rdi+rax*4+0x5c]
+       0 :   1579:   vmovups YMMWORD PTR [rsp+0x5c0],ymm2
+      69 :   1582:   vmaskmovps ymm2,ymm7,YMMWORD PTR [rdi+rax*4+0xfc]
+         : 201  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      82 :   158c:   vfmadd213ps ymm1,ymm4,ymm3
+         : 203  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      15 :   1591:   vmaskmovps ymm3,ymm10,YMMWORD PTR [rdi+rax*4+0x98]
+       1 :   159b:   vmovups YMMWORD PTR [rsp+0x5e0],ymm1
+         : 206  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      21 :   15a4:   vmaskmovps ymm1,ymm10,YMMWORD PTR [rdi+rax*4+0x9c]
+         : 208  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       6 :   15ae:   vfmadd213ps ymm1,ymm4,ymm3
+         : 210  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       8 :   15b3:   vmaskmovps ymm3,ymm8,YMMWORD PTR [rdi+rax*4+0xd8]
+       9 :   15bd:   vmovups YMMWORD PTR [rsp+0x5a0],ymm1
+         : 213  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      31 :   15c6:   vmaskmovps ymm1,ymm9,YMMWORD PTR [rdi+rax*4+0xbc]
+      12 :   15d0:   vmovups ymm9,YMMWORD PTR [rsp+0x700]
+         : 216  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       5 :   15d9:   vfmadd213ps ymm1,ymm4,ymm0
+         : 218  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      19 :   15de:   vmaskmovps ymm0,ymm7,YMMWORD PTR [rdi+rax*4+0xf8]
+      16 :   15e8:   vmovups ymm7,YMMWORD PTR [rsp+0x6c0]
+       3 :   15f1:   vmovups YMMWORD PTR [rsp+0x560],ymm1
+         : 222  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      35 :   15fa:   vmaskmovps ymm1,ymm8,YMMWORD PTR [rdi+rax*4+0xdc]
+       4 :   1604:   vmovaps ymm8,ymm11
+         : 225  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1609:   vfmadd213ps ymm2,ymm4,ymm0
+      26 :   160e:   vfmadd213ps ymm1,ymm4,ymm3
+      16 :   1613:   vmovups YMMWORD PTR [rsp+0x4e0],ymm2
+      23 :   161c:   vmovups ymm2,YMMWORD PTR [rsp-0x80]
+       0 :   1622:   vmovups YMMWORD PTR [rsp+0x520],ymm1
+      25 :   162b:   vmovups ymm1,YMMWORD PTR [rsp-0x60]
+         : 232  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       3 :   1631:   vmaskmovps ymm0,ymm2,YMMWORD PTR [rdi+rax*4+0x138]
+      24 :   163b:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x118]
+         : 235  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       8 :   1645:   vmaskmovps ymm1,ymm1,YMMWORD PTR [rdi+rax*4+0x11c]
+         : 237  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   164f:   vfmadd213ps ymm1,ymm4,ymm3
+       7 :   1654:   vmovups YMMWORD PTR [rsp+0x260],ymm1
+         : 240  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      27 :   165d:   vmaskmovps ymm1,ymm2,YMMWORD PTR [rdi+rax*4+0x13c]
+       5 :   1667:   vmaskmovps ymm2,ymm5,YMMWORD PTR [rdi+rax*4+0x17c]
+         : 243  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      39 :   1671:   vfmadd213ps ymm1,ymm4,ymm0
+         : 245  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      21 :   1676:   vmaskmovps ymm0,ymm5,YMMWORD PTR [rdi+rax*4+0x178]
+      10 :   1680:   vmovups YMMWORD PTR [rsp+0x240],ymm1
+      31 :   1689:   vmovups ymm1,YMMWORD PTR [rsp-0x20]
+         : 249  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   168f:   vfmadd213ps ymm2,ymm4,ymm0
+         : 251  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      23 :   1694:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x158]
+         : 253  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       9 :   169e:   vmaskmovps ymm1,ymm1,YMMWORD PTR [rdi+rax*4+0x15c]
+       4 :   16a8:   vmovups YMMWORD PTR [rsp+0x340],ymm2
+      32 :   16b1:   vmovups ymm2,YMMWORD PTR [rsp-0x40]
+         : 257  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   16b7:   vfmadd213ps ymm1,ymm4,ymm3
+         : 259  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      14 :   16bc:   vmaskmovps ymm0,ymm2,YMMWORD PTR [rdi+rax*4+0x1b8]
+      28 :   16c6:   vmovups YMMWORD PTR [rsp+0x380],ymm1
+      19 :   16cf:   vmovups ymm1,YMMWORD PTR [rsp+0x40]
+       2 :   16d5:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x198]
+         : 264  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       3 :   16df:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x19c]
+       0 :   16e9:   vmaskmovps ymm1,ymm2,YMMWORD PTR [rdi+rax*4+0x1bc]
+      15 :   16f3:   vmovups ymm2,YMMWORD PTR [rsp]
+         : 268  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   16f8:   vfmadd213ps ymm1,ymm11,ymm0
+      32 :   16fd:   vfmadd213ps ymm4,ymm11,ymm3
+         : 271  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      10 :   1702:   vmaskmovps ymm0,ymm2,YMMWORD PTR [rdi+rax*4+0x1f8]
+         : 273  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      34 :   170c:   vmaskmovps ymm2,ymm2,YMMWORD PTR [rdi+rax*4+0x1fc]
+       6 :   1716:   vmovups YMMWORD PTR [rsp+0x320],ymm1
+      30 :   171f:   vmovups ymm1,YMMWORD PTR [rsp+0x60]
+       4 :   1725:   vmovups YMMWORD PTR [rsp+0x220],ymm4
+         : 278  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      16 :   172e:   vmaskmovps ymm4,ymm9,YMMWORD PTR [rdi+rax*4+0x398]
+         : 280  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     213 :   1738:   vfmadd213ps ymm2,ymm11,ymm0
+         : 282  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      13 :   173d:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x1d8]
+         : 284  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       3 :   1747:   vmaskmovps ymm1,ymm1,YMMWORD PTR [rdi+rax*4+0x1dc]
+       4 :   1751:   vmovups YMMWORD PTR [rsp+0x2e0],ymm2
+      10 :   175a:   vmovups ymm2,YMMWORD PTR [rsp+0x20]
+         : 288  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1760:   vfmadd213ps ymm1,ymm11,ymm3
+         : 290  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      13 :   1765:   vmaskmovps ymm0,ymm2,YMMWORD PTR [rdi+rax*4+0x238]
+      14 :   176f:   vmovups YMMWORD PTR [rsp+0x300],ymm1
+      32 :   1778:   vmovups ymm1,YMMWORD PTR [rsp+0x80]
+       0 :   1781:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x218]
+         : 295  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       2 :   178b:   vmaskmovps ymm1,ymm1,YMMWORD PTR [rdi+rax*4+0x21c]
+         : 297  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1795:   vfmadd213ps ymm1,ymm11,ymm3
+      19 :   179a:   vmovups YMMWORD PTR [rsp+0x2c0],ymm1
+         : 300  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      30 :   17a3:   vmaskmovps ymm1,ymm2,YMMWORD PTR [rdi+rax*4+0x23c]
+       6 :   17ad:   vmaskmovps ymm2,ymm6,YMMWORD PTR [rdi+rax*4+0x27c]
+         : 303  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      21 :   17b7:   vfmadd213ps ymm1,ymm11,ymm0
+         : 305  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      20 :   17bc:   vmaskmovps ymm0,ymm6,YMMWORD PTR [rdi+rax*4+0x278]
+         : 307  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       9 :   17c6:   vmaskmovps ymm6,ymm13,YMMWORD PTR [rdi+rax*4+0x35c]
+      36 :   17d0:   vmovups YMMWORD PTR [rsp+0x2a0],ymm1
+      13 :   17d9:   vmovups ymm1,YMMWORD PTR [rsp+0xa0]
+         : 311  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   17e2:   vfmadd213ps ymm2,ymm11,ymm0
+         : 313  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      21 :   17e7:   vmaskmovps ymm0,ymm12,YMMWORD PTR [rdi+rax*4+0x2b8]
+      12 :   17f1:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x258]
+         : 316  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       2 :   17fb:   vmaskmovps ymm1,ymm1,YMMWORD PTR [rdi+rax*4+0x25c]
+      10 :   1805:   vmovups YMMWORD PTR [rsp+0x200],ymm2
+         : 319  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      25 :   180e:   vfmadd213ps ymm1,ymm11,ymm3
+      16 :   1813:   vmovups YMMWORD PTR [rsp+0x360],ymm1
+      25 :   181c:   vmovups ymm1,YMMWORD PTR [rsp+0x400]
+         : 323  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       2 :   1825:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x298]
+         : 325  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       5 :   182f:   vmaskmovps ymm2,ymm1,YMMWORD PTR [rdi+rax*4+0x29c]
+       4 :   1839:   vmaskmovps ymm1,ymm12,YMMWORD PTR [rdi+rax*4+0x2bc]
+         : 328  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1843:   vfmadd213ps ymm2,ymm11,ymm3
+      17 :   1848:   vfmadd213ps ymm1,ymm11,ymm0
+      21 :   184d:   vmovups YMMWORD PTR [rsp+0x1e0],ymm2
+      26 :   1856:   vmovups ymm2,YMMWORD PTR [rsp+0x440]
+       2 :   185f:   vmovups YMMWORD PTR [rsp+0x280],ymm1
+      28 :   1868:   vmovups ymm1,YMMWORD PTR [rsp+0x1a0]
+         : 335  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   1871:   vmaskmovps ymm0,ymm2,YMMWORD PTR [rdi+rax*4+0x2f8]
+         : 337  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      13 :   187b:   vmaskmovps ymm14,ymm2,YMMWORD PTR [rdi+rax*4+0x2fc]
+       4 :   1885:   vmovups ymm2,YMMWORD PTR [rsp+0x460]
+         : 340  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      11 :   188e:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x2d8]
+         : 342  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       5 :   1898:   vmaskmovps ymm15,ymm1,YMMWORD PTR [rdi+rax*4+0x2dc]
+       9 :   18a2:   vmovups ymm1,YMMWORD PTR [rsp+0x1c0]
+         : 345  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   18ab:   vfmadd213ps ymm15,ymm11,ymm3
+      41 :   18b0:   vfmadd213ps ymm14,ymm11,ymm0
+         : 348  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      28 :   18b5:   vmaskmovps ymm0,ymm2,YMMWORD PTR [rdi+rax*4+0x338]
+         : 350  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       6 :   18bf:   vmaskmovps ymm10,ymm2,YMMWORD PTR [rdi+rax*4+0x33c]
+         : 352  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       9 :   18c9:   vmaskmovps ymm3,ymm1,YMMWORD PTR [rdi+rax*4+0x318]
+         : 354  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      13 :   18d3:   vmaskmovps ymm12,ymm1,YMMWORD PTR [rdi+rax*4+0x31c]
+       1 :   18dd:   vmaskmovps ymm1,ymm7,YMMWORD PTR [rdi+rax*4+0x3bc]
+         : 357  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     236 :   18e7:   vfmadd213ps ymm12,ymm11,ymm3
+      30 :   18ec:   vfmadd213ps ymm10,ymm11,ymm0
+      14 :   18f1:   vmovups ymm11,YMMWORD PTR [rsp+0x6a0]
+         : 361  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       5 :   18fa:   vmaskmovps ymm3,ymm13,YMMWORD PTR [rdi+rax*4+0x358]
+       0 :   1904:   vmaskmovps ymm0,ymm11,YMMWORD PTR [rdi+rax*4+0x378]
+         : 364  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       7 :   190e:   vmaskmovps ymm5,ymm11,YMMWORD PTR [rdi+rax*4+0x37c]
+         : 366  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       6 :   1918:   vfmadd213ps ymm6,ymm8,ymm3
+         : 368  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      11 :   191d:   vmaskmovps ymm3,ymm9,YMMWORD PTR [rdi+rax*4+0x39c]
+         : 370  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      13 :   1927:   vfmadd213ps ymm5,ymm8,ymm0
+         : 372  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      36 :   192c:   vmaskmovps ymm0,ymm7,YMMWORD PTR [rdi+rax*4+0x3b8]
+         : 374  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      13 :   1936:   vfmadd213ps ymm3,ymm8,ymm4
+      10 :   193b:   vfmadd213ps ymm1,ymm8,ymm0
+      64 :   1940:   vmovaps ymm2,ymm1
+       0 :   1944:   vmovups ymm1,YMMWORD PTR [rsp+0x720]
+         : 379  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   194d:   vmaskmovps ymm0,ymm1,YMMWORD PTR [rdi+rax*4+0x3d8]
+         : 381  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       5 :   1957:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x3dc]
+         : 383  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       8 :   1961:   vfmadd213ps ymm4,ymm8,ymm0
+         : 385  c = tl.load(src + i, mask=interior, other=0.0)
+      58 :   1966:   vmaskmovps ymm8,ymm1,YMMWORD PTR [rdi+rax*4+0x3e0]
+         : 387  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   1970:   vbroadcastss ymm0,DWORD PTR [rip+0x1e8f]        # 3808 <_fini+0xe18>
+       1 :   1979:   vmovups ymm1,YMMWORD PTR [rsp+0x460]
+       3 :   1982:   vfmadd231ps ymm4,ymm0,ymm8
+     111 :   1987:   vmovups ymm8,YMMWORD PTR [rsp+0x5a0]
+       2 :   1990:   vmovups YMMWORD PTR [rsp+0x760],ymm4
+         : 393  c = tl.load(src + i, mask=interior, other=0.0)
+      64 :   1999:   vmaskmovps ymm4,ymm7,YMMWORD PTR [rdi+rax*4+0x3c0]
+       1 :   19a3:   vmaskmovps ymm7,ymm9,YMMWORD PTR [rdi+rax*4+0x3a0]
+       0 :   19ad:   vmovups ymm9,YMMWORD PTR [rsp+0x3a0]
+         : 397  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   19b6:   vfmadd231ps ymm2,ymm0,ymm4
+         : 399  c = tl.load(src + i, mask=interior, other=0.0)
+       9 :   19bb:   vmaskmovps ymm4,ymm11,YMMWORD PTR [rdi+rax*4+0x380]
+         : 401  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   19c5:   vfmadd231ps ymm3,ymm0,ymm7
+       2 :   19ca:   vmovups ymm11,YMMWORD PTR [rsp+0x560]
+       0 :   19d3:   vmovups YMMWORD PTR [rsp+0x740],ymm2
+      31 :   19dc:   vmovups ymm2,YMMWORD PTR [rsp+0x600]
+       1 :   19e5:   vmovups YMMWORD PTR [rsp+0x420],ymm3
+       5 :   19ee:   vmovups ymm3,YMMWORD PTR [rsp+0x3e0]
+       0 :   19f7:   vfmadd231ps ymm5,ymm0,ymm4
+         : 409  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   19fc:   vmaskmovps ymm4,ymm13,YMMWORD PTR [rdi+rax*4+0x360]
+       2 :   1a06:   vmovups ymm13,YMMWORD PTR [rsp+0x520]
+       0 :   1a0f:   vmovups YMMWORD PTR [rsp+0x480],ymm5
+       5 :   1a18:   vmovups ymm5,YMMWORD PTR [rsp+0x5e0]
+         : 414  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      31 :   1a21:   vfmadd231ps ymm6,ymm0,ymm4
+         : 416  c = tl.load(src + i, mask=interior, other=0.0)
+       6 :   1a26:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x340]
+       4 :   1a30:   vmovups ymm1,YMMWORD PTR [rsp+0x440]
+       1 :   1a39:   vmovups YMMWORD PTR [rsp+0x4a0],ymm6
+      16 :   1a42:   vmovups ymm6,YMMWORD PTR [rsp+0x5c0]
+         : 421  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1a4b:   vfmadd231ps ymm10,ymm0,ymm4
+         : 423  c = tl.load(src + i, mask=interior, other=0.0)
+       9 :   1a50:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x300]
+       2 :   1a5a:   vmovups ymm1,YMMWORD PTR [rsp+0x1c0]
+      23 :   1a63:   vmovups YMMWORD PTR [rsp+0x4c0],ymm10
+      20 :   1a6c:   vmovups ymm10,YMMWORD PTR [rsp+0x180]
+       2 :   1a75:   vmaskmovps ymm7,ymm1,YMMWORD PTR [rdi+rax*4+0x320]
+       0 :   1a7f:   vmovups ymm1,YMMWORD PTR [rsp+0x1a0]
+         : 430  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1a88:   vfmadd231ps ymm14,ymm0,ymm4
+      12 :   1a8d:   vmovups YMMWORD PTR [rsp+0x500],ymm14
+      29 :   1a96:   vmovups ymm14,YMMWORD PTR [rsp+0x4e0]
+         : 434  c = tl.load(src + i, mask=interior, other=0.0)
+       1 :   1a9f:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x2e0]
+      20 :   1aa9:   vmovups ymm1,YMMWORD PTR [rsp+0x660]
+         : 437  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       6 :   1ab2:   vfmadd231ps ymm12,ymm0,ymm7
+       5 :   1ab7:   vmovups YMMWORD PTR [rsp+0x580],ymm12
+      23 :   1ac0:   vmovups ymm12,YMMWORD PTR [rsp+0x640]
+       0 :   1ac9:   vfmadd231ps ymm15,ymm0,ymm4
+         : 442  c = tl.load(src + i, mask=interior, other=0.0)
+      22 :   1ace:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x2c0]
+       4 :   1ad8:   vmovups ymm1,YMMWORD PTR [rsp+0x280]
+       2 :   1ae1:   vmovups YMMWORD PTR [rsp+0x540],ymm15
+      46 :   1aea:   vmaskmovps ymm15,ymm3,YMMWORD PTR [rdi+rax*4]
+         : 447  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1af0:   vfmadd231ps ymm1,ymm0,ymm4
+      18 :   1af5:   vmovups YMMWORD PTR [rsp+0x280],ymm1
+      35 :   1afe:   vmovups ymm1,YMMWORD PTR [rsp+0x680]
+       0 :   1b07:   vfmadd231ps ymm12,ymm0,ymm15
+       5 :   1b0c:   vmovups ymm15,YMMWORD PTR [rsp+0x740]
+         : 453  c = tl.load(src + i, mask=interior, other=0.0)
+      13 :   1b15:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x280]
+       3 :   1b1f:   vmovups ymm1,YMMWORD PTR [rsp+0x400]
+       5 :   1b28:   vmaskmovps ymm7,ymm1,YMMWORD PTR [rdi+rax*4+0x2a0]
+       2 :   1b32:   vmovups ymm1,YMMWORD PTR [rsp+0x1e0]
+         : 458  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1b3b:   vfmadd231ps ymm1,ymm0,ymm7
+      43 :   1b40:   vmovups YMMWORD PTR [rsp+0x1e0],ymm1
+      60 :   1b49:   vmovups ymm1,YMMWORD PTR [rsp+0x200]
+       0 :   1b52:   vfmadd231ps ymm1,ymm0,ymm4
+       7 :   1b57:   vmovups YMMWORD PTR [rsp+0x200],ymm1
+      27 :   1b60:   vmovups ymm1,YMMWORD PTR [rsp+0xa0]
+         : 465  c = tl.load(src + i, mask=interior, other=0.0)
+       1 :   1b69:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x260]
+       0 :   1b73:   vmovups ymm1,YMMWORD PTR [rsp+0x360]
+         : 468  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1b7c:   vfmadd231ps ymm1,ymm0,ymm4
+      25 :   1b81:   vmovups YMMWORD PTR [rsp+0x360],ymm1
+      44 :   1b8a:   vmovups ymm1,YMMWORD PTR [rsp+0x20]
+         : 472  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1b90:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x240]
+       2 :   1b9a:   vmovups ymm1,YMMWORD PTR [rsp+0x2a0]
+         : 475  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1ba3:   vfmadd231ps ymm1,ymm0,ymm4
+      22 :   1ba8:   vmovups YMMWORD PTR [rsp+0x2a0],ymm1
+      43 :   1bb1:   vmovups ymm1,YMMWORD PTR [rsp]
+         : 479  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1bb6:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x200]
+       1 :   1bc0:   vmovups ymm1,YMMWORD PTR [rsp+0x80]
+       2 :   1bc9:   vmaskmovps ymm7,ymm1,YMMWORD PTR [rdi+rax*4+0x220]
+       1 :   1bd3:   vmovups ymm1,YMMWORD PTR [rsp+0x2c0]
+         : 484  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1bdc:   vfmadd231ps ymm1,ymm0,ymm7
+      15 :   1be1:   vmovups YMMWORD PTR [rsp+0x2c0],ymm1
+      46 :   1bea:   vmovups ymm1,YMMWORD PTR [rsp+0x2e0]
+       3 :   1bf3:   vfmadd231ps ymm1,ymm0,ymm4
+       3 :   1bf8:   vmovups YMMWORD PTR [rsp+0x2e0],ymm1
+      24 :   1c01:   vmovups ymm1,YMMWORD PTR [rsp+0x60]
+         : 491  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1c07:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x1e0]
+       4 :   1c11:   vmovups ymm1,YMMWORD PTR [rsp+0x300]
+         : 494  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1c1a:   vfmadd231ps ymm1,ymm0,ymm4
+      14 :   1c1f:   vmovups YMMWORD PTR [rsp+0x300],ymm1
+      54 :   1c28:   vmovups ymm1,YMMWORD PTR [rsp-0x40]
+         : 498  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1c2e:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x1c0]
+       1 :   1c38:   vmovups ymm1,YMMWORD PTR [rsp+0x320]
+         : 501  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1c41:   vfmadd231ps ymm1,ymm0,ymm4
+      15 :   1c46:   vmovups YMMWORD PTR [rsp+0x320],ymm1
+      41 :   1c4f:   vmovups ymm1,YMMWORD PTR [rsp+0x120]
+         : 505  c = tl.load(src + i, mask=interior, other=0.0)
+       3 :   1c58:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x180]
+       1 :   1c62:   vmovups ymm1,YMMWORD PTR [rsp+0x40]
+       4 :   1c68:   vmaskmovps ymm7,ymm1,YMMWORD PTR [rdi+rax*4+0x1a0]
+       1 :   1c72:   vmovups ymm1,YMMWORD PTR [rsp+0x220]
+         : 510  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1c7b:   vfmadd231ps ymm1,ymm0,ymm7
+      30 :   1c80:   vmovups YMMWORD PTR [rsp+0x220],ymm1
+      61 :   1c89:   vmovups ymm1,YMMWORD PTR [rsp+0x340]
+       1 :   1c92:   vfmadd231ps ymm1,ymm0,ymm4
+       2 :   1c97:   vmovups YMMWORD PTR [rsp+0x340],ymm1
+      30 :   1ca0:   vmovups ymm1,YMMWORD PTR [rsp-0x20]
+         : 517  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1ca6:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x160]
+       0 :   1cb0:   vmovups ymm1,YMMWORD PTR [rsp+0x380]
+         : 520  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1cb9:   vfmadd231ps ymm1,ymm0,ymm4
+      19 :   1cbe:   vmovups YMMWORD PTR [rsp+0x380],ymm1
+      44 :   1cc7:   vmovups ymm1,YMMWORD PTR [rsp-0x80]
+         : 524  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1ccd:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x140]
+       7 :   1cd7:   vmovups ymm1,YMMWORD PTR [rsp+0x240]
+         : 527  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1ce0:   vfmadd231ps ymm1,ymm0,ymm4
+      10 :   1ce5:   vmovups YMMWORD PTR [rsp+0x240],ymm1
+      38 :   1cee:   vmovups ymm1,YMMWORD PTR [rsp+0x140]
+         : 531  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1cf7:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x100]
+       0 :   1d01:   vmovups ymm1,YMMWORD PTR [rsp-0x60]
+       3 :   1d07:   vmaskmovps ymm7,ymm1,YMMWORD PTR [rdi+rax*4+0x120]
+       3 :   1d11:   vmovups ymm1,YMMWORD PTR [rsp+0x260]
+         : 536  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1d1a:   vfmadd231ps ymm14,ymm0,ymm4
+       8 :   1d1f:   vfmadd231ps ymm1,ymm0,ymm7
+      34 :   1d24:   vmovups YMMWORD PTR [rsp+0x260],ymm1
+      64 :   1d2d:   vmovups ymm1,YMMWORD PTR [rsp+0xc0]
+         : 541  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1d36:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0xe0]
+       0 :   1d40:   vmovups ymm1,YMMWORD PTR [rsp+0x100]
+         : 544  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   1d49:   vfmadd231ps ymm13,ymm0,ymm4
+         : 546  c = tl.load(src + i, mask=interior, other=0.0)
+       5 :   1d4e:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0xc0]
+       1 :   1d58:   vmovups ymm1,YMMWORD PTR [rsp+0x160]
+         : 549  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       5 :   1d61:   vfmadd231ps ymm11,ymm0,ymm4
+         : 551  c = tl.load(src + i, mask=interior, other=0.0)
+      21 :   1d66:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x80]
+      20 :   1d70:   vmovups ymm1,YMMWORD PTR [rsp+0xe0]
+         : 554  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1d79:   vfmadd231ps ymm6,ymm0,ymm4
+         : 556  c = tl.load(src + i, mask=interior, other=0.0)
+      43 :   1d7e:   vmaskmovps ymm4,ymm10,YMMWORD PTR [rdi+rax*4+0x60]
+       1 :   1d85:   vmaskmovps ymm7,ymm1,YMMWORD PTR [rdi+rax*4+0xa0]
+       1 :   1d8f:   vmovups ymm1,YMMWORD PTR [rsp+0x620]
+         : 560  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1d98:   vfmadd231ps ymm5,ymm0,ymm4
+         : 562  c = tl.load(src + i, mask=interior, other=0.0)
+      30 :   1d9d:   vmaskmovps ymm4,ymm9,YMMWORD PTR [rdi+rax*4+0x40]
+         : 564  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1da4:   vfmadd231ps ymm8,ymm0,ymm7
+      38 :   1da9:   vfmadd231ps ymm2,ymm0,ymm4
+      24 :   1dae:   vmovups ymm4,YMMWORD PTR [rsp+0x3c0]
+         : 568  c = tl.load(src + i, mask=interior, other=0.0)
+       1 :   1db7:   vmaskmovps ymm7,ymm4,YMMWORD PTR [rdi+rax*4+0x20]
+         : 570  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1dbe:   vfmadd231ps ymm1,ymm0,ymm7
+         : 572  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      38 :   1dc3:   vmaskmovps ymm0,ymm3,YMMWORD PTR [rdi+rax*4+0x4]
+       2 :   1dca:   vbroadcastss ymm3,DWORD PTR [rip+0x1a31]        # 3804 <_fini+0xe14>
+       0 :   1dd3:   vmovups ymm7,YMMWORD PTR [rsp+0x460]
+         : 576  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1ddc:   vfmadd231ps ymm12,ymm3,ymm0
+         : 578  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      30 :   1de1:   vmaskmovps ymm0,ymm4,YMMWORD PTR [rdi+rax*4+0x24]
+       9 :   1de8:   vmaskmovps ymm4,ymm9,YMMWORD PTR [rdi+rax*4+0x44]
+       6 :   1def:   vmovups ymm9,YMMWORD PTR [rsp+0x1c0]
+       0 :   1df8:   vmovups YMMWORD PTR [rsp+0x640],ymm12
+      55 :   1e01:   vmovups ymm12,YMMWORD PTR [rsp+0x1a0]
+         : 584  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1e0a:   vfmadd231ps ymm1,ymm3,ymm0
+         : 586  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      49 :   1e0f:   vmaskmovps ymm0,ymm10,YMMWORD PTR [rdi+rax*4+0x64]
+         : 588  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1e16:   vfmadd231ps ymm2,ymm3,ymm4
+       8 :   1e1b:   vmovups ymm10,YMMWORD PTR [rsp+0x440]
+       0 :   1e24:   vmovups YMMWORD PTR [rsp+0x620],ymm1
+      64 :   1e2d:   vmovups ymm1,YMMWORD PTR [rsp+0x100]
+       0 :   1e36:   vmovups YMMWORD PTR [rsp+0x600],ymm2
+      16 :   1e3f:   vmovups ymm2,YMMWORD PTR [rsp+0x6c0]
+       0 :   1e48:   vfmadd231ps ymm5,ymm3,ymm0
+       3 :   1e4d:   vmovups ymm0,YMMWORD PTR [rsp+0x160]
+         : 597  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       1 :   1e56:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0xc4]
+       0 :   1e60:   vmovups ymm1,YMMWORD PTR [rsp+0x260]
+       0 :   1e69:   vmovups YMMWORD PTR [rsp+0x5e0],ymm5
+      30 :   1e72:   vmovups ymm5,YMMWORD PTR [rsp+0x700]
+       0 :   1e7b:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x84]
+         : 603  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       7 :   1e85:   vfmadd231ps ymm11,ymm3,ymm4
+       6 :   1e8a:   vfmadd231ps ymm6,ymm3,ymm0
+      32 :   1e8f:   vmovups ymm0,YMMWORD PTR [rsp+0xe0]
+       0 :   1e98:   vmovups YMMWORD PTR [rsp+0x560],ymm11
+      18 :   1ea1:   vmovups ymm11,YMMWORD PTR [rsp+0x660]
+       4 :   1eaa:   vmovups YMMWORD PTR [rsp+0x5c0],ymm6
+      45 :   1eb3:   vmovups ymm6,YMMWORD PTR [rsp+0x6a0]
+         : 611  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1ebc:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0xa4]
+         : 613  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      11 :   1ec6:   vfmadd231ps ymm8,ymm3,ymm0
+      56 :   1ecb:   vmovups ymm0,YMMWORD PTR [rsp+0xc0]
+       0 :   1ed4:   vmovups YMMWORD PTR [rsp+0x5a0],ymm8
+      54 :   1edd:   vmovups ymm8,YMMWORD PTR [rsp+0x6e0]
+         : 618  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1ee6:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0xe4]
+         : 620  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1ef0:   vfmadd231ps ymm13,ymm3,ymm0
+      21 :   1ef5:   vmovups ymm0,YMMWORD PTR [rsp+0x140]
+       0 :   1efe:   vmovups YMMWORD PTR [rsp+0x520],ymm13
+      62 :   1f07:   vmovups ymm13,YMMWORD PTR [rsp+0x400]
+         : 625  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1f10:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x104]
+         : 627  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1f1a:   vfmadd231ps ymm14,ymm3,ymm0
+       8 :   1f1f:   vmovups ymm0,YMMWORD PTR [rsp-0x60]
+       2 :   1f25:   vmovups YMMWORD PTR [rsp+0x4e0],ymm14
+      45 :   1f2e:   vmovups ymm14,YMMWORD PTR [rsp+0x680]
+         : 632  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1f37:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x124]
+         : 634  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1f41:   vfmadd231ps ymm1,ymm3,ymm0
+      21 :   1f46:   vmovups ymm0,YMMWORD PTR [rsp-0x20]
+       1 :   1f4c:   vmovups YMMWORD PTR [rsp+0x260],ymm1
+      53 :   1f55:   vmovups ymm1,YMMWORD PTR [rsp-0x80]
+         : 639  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1f5b:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x164]
+       5 :   1f65:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x144]
+       7 :   1f6f:   vmovups ymm1,YMMWORD PTR [rsp+0x240]
+         : 643  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1f78:   vfmadd231ps ymm1,ymm3,ymm4
+      10 :   1f7d:   vmovups YMMWORD PTR [rsp+0x240],ymm1
+      53 :   1f86:   vmovups ymm1,YMMWORD PTR [rsp+0x380]
+       1 :   1f8f:   vfmadd231ps ymm1,ymm3,ymm0
+      12 :   1f94:   vmovups ymm0,YMMWORD PTR [rsp+0x120]
+       1 :   1f9d:   vmovups YMMWORD PTR [rsp+0x380],ymm1
+      30 :   1fa6:   vmovups ymm1,YMMWORD PTR [rsp+0x340]
+         : 651  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1faf:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x184]
+         : 653  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1fb9:   vfmadd231ps ymm1,ymm3,ymm0
+      16 :   1fbe:   vmovups ymm0,YMMWORD PTR [rsp+0x40]
+       7 :   1fc4:   vmovups YMMWORD PTR [rsp+0x340],ymm1
+      38 :   1fcd:   vmovups ymm1,YMMWORD PTR [rsp+0x220]
+         : 658  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1fd6:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x1a4]
+         : 660  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       7 :   1fe0:   vfmadd231ps ymm1,ymm3,ymm0
+      32 :   1fe5:   vmovups ymm0,YMMWORD PTR [rsp+0x60]
+       1 :   1feb:   vmovups YMMWORD PTR [rsp+0x220],ymm1
+      52 :   1ff4:   vmovups ymm1,YMMWORD PTR [rsp-0x40]
+         : 665  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1ffa:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x1e4]
+       8 :   2004:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x1c4]
+       3 :   200e:   vmovups ymm1,YMMWORD PTR [rsp+0x320]
+         : 669  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   2017:   vfmadd231ps ymm1,ymm3,ymm4
+      26 :   201c:   vmovups YMMWORD PTR [rsp+0x320],ymm1
+      54 :   2025:   vmovups ymm1,YMMWORD PTR [rsp+0x300]
+       0 :   202e:   vfmadd231ps ymm1,ymm3,ymm0
+      12 :   2033:   vmovups ymm0,YMMWORD PTR [rsp]
+       0 :   2038:   vmovups YMMWORD PTR [rsp+0x300],ymm1
+      21 :   2041:   vmovups ymm1,YMMWORD PTR [rsp+0x2e0]
+         : 677  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       3 :   204a:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x204]
+         : 679  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2054:   vfmadd231ps ymm1,ymm3,ymm0
+      14 :   2059:   vmovups ymm0,YMMWORD PTR [rsp+0x80]
+      10 :   2062:   vmovups YMMWORD PTR [rsp+0x2e0],ymm1
+      43 :   206b:   vmovups ymm1,YMMWORD PTR [rsp+0x2c0]
+         : 684  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   2074:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x224]
+         : 686  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       8 :   207e:   vfmadd231ps ymm1,ymm3,ymm0
+      36 :   2083:   vmovups ymm0,YMMWORD PTR [rsp+0xa0]
+       0 :   208c:   vmovups YMMWORD PTR [rsp+0x2c0],ymm1
+      60 :   2095:   vmovups ymm1,YMMWORD PTR [rsp+0x20]
+         : 691  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   209b:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x264]
+       7 :   20a5:   vmaskmovps ymm4,ymm1,YMMWORD PTR [rdi+rax*4+0x244]
+       4 :   20af:   vmovups ymm1,YMMWORD PTR [rsp+0x2a0]
+         : 695  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   20b8:   vfmadd231ps ymm1,ymm3,ymm4
+         : 697  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      35 :   20bd:   vmaskmovps ymm4,ymm11,YMMWORD PTR [rdi+rax*4+0x2c4]
+         : 699  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       4 :   20c7:   vmaskmovps ymm11,ymm11,YMMWORD PTR [rdi+rax*4+0x2c8]
+       2 :   20d1:   vmovups YMMWORD PTR [rsp+0x2a0],ymm1
+      62 :   20da:   vmovups ymm1,YMMWORD PTR [rsp+0x360]
+         : 703  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   20e3:   vfmadd231ps ymm1,ymm3,ymm0
+         : 705  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      19 :   20e8:   vmaskmovps ymm0,ymm14,YMMWORD PTR [rdi+rax*4+0x284]
+         : 707  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       2 :   20f2:   vmaskmovps ymm14,ymm14,YMMWORD PTR [rdi+rax*4+0x288]
+       0 :   20fc:   vmovups YMMWORD PTR [rsp+0x360],ymm1
+      46 :   2105:   vmovups ymm1,YMMWORD PTR [rsp+0x200]
+         : 711  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   210e:   vfmadd231ps ymm1,ymm3,ymm0
+         : 713  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      16 :   2113:   vmaskmovps ymm0,ymm13,YMMWORD PTR [rdi+rax*4+0x2a4]
+         : 715  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       3 :   211d:   vmaskmovps ymm13,ymm13,YMMWORD PTR [rdi+rax*4+0x2a8]
+       4 :   2127:   vmovups YMMWORD PTR [rsp+0x200],ymm1
+      46 :   2130:   vmovups ymm1,YMMWORD PTR [rsp+0x1e0]
+         : 719  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2139:   vfmadd231ps ymm1,ymm3,ymm0
+         : 721  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      22 :   213e:   vmaskmovps ymm0,ymm12,YMMWORD PTR [rdi+rax*4+0x2e4]
+         : 723  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       6 :   2148:   vmaskmovps ymm12,ymm12,YMMWORD PTR [rdi+rax*4+0x2e8]
+       3 :   2152:   vmovups YMMWORD PTR [rsp+0x1e0],ymm1
+      40 :   215b:   vmovups ymm1,YMMWORD PTR [rsp+0x280]
+         : 727  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2164:   vfmadd231ps ymm1,ymm3,ymm4
+         : 729  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      17 :   2169:   vmaskmovps ymm4,ymm7,YMMWORD PTR [rdi+rax*4+0x344]
+       6 :   2173:   vmovups YMMWORD PTR [rsp+0x280],ymm1
+      34 :   217c:   vmovups ymm1,YMMWORD PTR [rsp+0x540]
+         : 733  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2185:   vfmadd231ps ymm1,ymm3,ymm0
+         : 735  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      12 :   218a:   vmaskmovps ymm0,ymm10,YMMWORD PTR [rdi+rax*4+0x304]
+         : 737  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       1 :   2194:   vmaskmovps ymm10,ymm10,YMMWORD PTR [rdi+rax*4+0x308]
+       4 :   219e:   vmovups YMMWORD PTR [rsp+0x540],ymm1
+      34 :   21a7:   vmovups ymm1,YMMWORD PTR [rsp+0x500]
+         : 741  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   21b0:   vfmadd231ps ymm1,ymm3,ymm0
+         : 743  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      20 :   21b5:   vmaskmovps ymm0,ymm9,YMMWORD PTR [rdi+rax*4+0x324]
+         : 745  e = tl.load(src + i + 2, mask=interior, other=0.0)
+      12 :   21bf:   vmaskmovps ymm9,ymm9,YMMWORD PTR [rdi+rax*4+0x328]
+       8 :   21c9:   vmovups YMMWORD PTR [rsp+0x500],ymm1
+      41 :   21d2:   vmovups ymm1,YMMWORD PTR [rsp+0x580]
+         : 749  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   21db:   vfmadd231ps ymm1,ymm3,ymm0
+         : 751  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      32 :   21e0:   vmaskmovps ymm0,ymm8,YMMWORD PTR [rdi+rax*4+0x364]
+         : 753  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       7 :   21ea:   vmaskmovps ymm8,ymm8,YMMWORD PTR [rdi+rax*4+0x368]
+      12 :   21f4:   vmovups YMMWORD PTR [rsp+0x580],ymm1
+      40 :   21fd:   vmovups ymm1,YMMWORD PTR [rsp+0x4c0]
+         : 757  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2206:   vfmadd231ps ymm1,ymm3,ymm4
+         : 759  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      13 :   220b:   vmaskmovps ymm4,ymm2,YMMWORD PTR [rdi+rax*4+0x3c4]
+      11 :   2215:   vmovups YMMWORD PTR [rsp+0x4c0],ymm1
+      28 :   221e:   vmovups ymm1,YMMWORD PTR [rsp+0x4a0]
+         : 763  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2227:   vfmadd231ps ymm15,ymm3,ymm4
+      19 :   222c:   vmovups ymm4,YMMWORD PTR [rsp+0x760]
+       3 :   2235:   vfmadd231ps ymm1,ymm3,ymm0
+         : 767  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      13 :   223a:   vmaskmovps ymm0,ymm6,YMMWORD PTR [rdi+rax*4+0x384]
+       0 :   2244:   vmovups YMMWORD PTR [rsp+0x4a0],ymm1
+      41 :   224d:   vmovups ymm1,YMMWORD PTR [rsp+0x480]
+         : 771  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2256:   vfmadd231ps ymm1,ymm3,ymm0
+         : 773  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      17 :   225b:   vmaskmovps ymm0,ymm5,YMMWORD PTR [rdi+rax*4+0x3a4]
+       2 :   2265:   vmovups YMMWORD PTR [rsp+0x480],ymm1
+      51 :   226e:   vmovups ymm1,YMMWORD PTR [rsp+0x420]
+         : 777  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2277:   vfmadd231ps ymm1,ymm3,ymm0
+      16 :   227c:   vmovups YMMWORD PTR [rsp+0x420],ymm1
+      51 :   2285:   vmovups ymm1,YMMWORD PTR [rsp+0x720]
+         : 781  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       3 :   228e:   vmaskmovps ymm0,ymm1,YMMWORD PTR [rdi+rax*4+0x3e4]
+         : 783  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      99 :   2298:   vfmadd231ps ymm4,ymm3,ymm0
+     127 :   229d:   vmovups ymm0,YMMWORD PTR [rsp+0x3e0]
+         : 786  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       0 :   22a6:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x8]
+       0 :   22ad:   vmovups YMMWORD PTR [rsp+0x3e0],ymm0
+       1 :   22b6:   vmovups ymm0,YMMWORD PTR [rsp+0x3c0]
+       0 :   22bf:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x28]
+       7 :   22c6:   vmovups YMMWORD PTR [rsp+0x3c0],ymm0
+       3 :   22cf:   vmovups ymm0,YMMWORD PTR [rsp+0x3a0]
+       0 :   22d8:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x48]
+      28 :   22df:   vmovups YMMWORD PTR [rsp+0x3a0],ymm0
+       3 :   22e8:   vmovups ymm0,YMMWORD PTR [rsp+0x180]
+       0 :   22f1:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x68]
+       3 :   22f8:   vmovups YMMWORD PTR [rsp+0x180],ymm0
+       2 :   2301:   vmovups ymm0,YMMWORD PTR [rsp+0x160]
+       3 :   230a:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x88]
+       1 :   2314:   vmovups YMMWORD PTR [rsp+0x160],ymm0
+       8 :   231d:   vmovups ymm0,YMMWORD PTR [rsp+0xe0]
+      27 :   2326:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0xa8]
+       9 :   2330:   vmovups YMMWORD PTR [rsp+0xe0],ymm0
+      12 :   2339:   vmovups ymm0,YMMWORD PTR [rsp+0x100]
+       0 :   2342:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0xc8]
+       2 :   234c:   vmovups YMMWORD PTR [rsp+0x100],ymm0
+      10 :   2355:   vmovups ymm0,YMMWORD PTR [rsp+0xc0]
+       1 :   235e:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0xe8]
+      11 :   2368:   vmovups YMMWORD PTR [rsp+0xc0],ymm0
+      35 :   2371:   vmovups ymm0,YMMWORD PTR [rsp+0x140]
+       0 :   237a:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x108]
+       5 :   2384:   vmovups YMMWORD PTR [rsp+0x140],ymm0
+      25 :   238d:   vmovups ymm0,YMMWORD PTR [rsp-0x60]
+       4 :   2393:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x128]
+      15 :   239d:   vmovups YMMWORD PTR [rsp-0x60],ymm0
+      35 :   23a3:   vmovups ymm0,YMMWORD PTR [rsp-0x80]
+       1 :   23a9:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x148]
+      17 :   23b3:   vmovups YMMWORD PTR [rsp-0x80],ymm0
+      39 :   23b9:   vmovups ymm0,YMMWORD PTR [rsp-0x20]
+       5 :   23bf:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x168]
+      32 :   23c9:   vmovups YMMWORD PTR [rsp-0x20],ymm0
+      28 :   23cf:   vmovups ymm0,YMMWORD PTR [rsp+0x120]
+       8 :   23d8:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x188]
+       7 :   23e2:   vmovups YMMWORD PTR [rsp+0x120],ymm0
+      42 :   23eb:   vmovups ymm0,YMMWORD PTR [rsp+0x40]
+       3 :   23f1:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x1a8]
+      11 :   23fb:   vmovups YMMWORD PTR [rsp+0x40],ymm0
+      47 :   2401:   vmovups ymm0,YMMWORD PTR [rsp-0x40]
+       1 :   2407:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x1c8]
+       8 :   2411:   vmovups YMMWORD PTR [rsp-0x40],ymm0
+      27 :   2417:   vmovups ymm0,YMMWORD PTR [rsp+0x60]
+       4 :   241d:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x1e8]
+      14 :   2427:   vmovups YMMWORD PTR [rsp+0x60],ymm0
+      44 :   242d:   vmovups ymm0,YMMWORD PTR [rsp]
+       0 :   2432:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x208]
+       4 :   243c:   vmovups YMMWORD PTR [rsp],ymm0
+      31 :   2441:   vmovups ymm0,YMMWORD PTR [rsp+0x80]
+       5 :   244a:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x228]
+      12 :   2454:   vmovups YMMWORD PTR [rsp+0x80],ymm0
+      40 :   245d:   vmovups ymm0,YMMWORD PTR [rsp+0x20]
+       3 :   2463:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x248]
+       9 :   246d:   vmovups YMMWORD PTR [rsp+0x20],ymm0
+      30 :   2473:   vmovups ymm0,YMMWORD PTR [rsp+0xa0]
+       5 :   247c:   vmaskmovps ymm0,ymm0,YMMWORD PTR [rdi+rax*4+0x268]
+      18 :   2486:   vmovups YMMWORD PTR [rsp+0xa0],ymm0
+      45 :   248f:   vmaskmovps ymm0,ymm7,YMMWORD PTR [rdi+rax*4+0x348]
+       4 :   2499:   vmaskmovps ymm7,ymm5,YMMWORD PTR [rdi+rax*4+0x3a8]
+       3 :   24a3:   vmovdqu ymm5,YMMWORD PTR [rsp+0x780]
+         : 849  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       1 :   24ac:   vpor   ymm3,ymm5,YMMWORD PTR [rip+0xb4c]        # 3000 <_fini+0x610>
+      20 :   24b4:   vmovups YMMWORD PTR [rsp+0x1c0],ymm0
+         : 852  e = tl.load(src + i + 2, mask=interior, other=0.0)
+      11 :   24bd:   vmaskmovps ymm0,ymm6,YMMWORD PTR [rdi+rax*4+0x388]
+      16 :   24c7:   vmaskmovps ymm6,ymm2,YMMWORD PTR [rdi+rax*4+0x3c8]
+      15 :   24d1:   vmovups YMMWORD PTR [rsp+0x1a0],ymm0
+      22 :   24da:   vmaskmovps ymm0,ymm1,YMMWORD PTR [rdi+rax*4+0x3e8]
+         : 857  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       9 :   24e4:   vbroadcastss ymm1,DWORD PTR [rip+0x131f]        # 380c <_fini+0xe1c>
+       3 :   24ed:   vmovups ymm2,YMMWORD PTR [rsp+0x1a0]
+     156 :   24f6:   vaddps ymm0,ymm0,ymm4
+       1 :   24fa:   vdivps ymm4,ymm0,ymm1
+         : 862  tl.store(dst + i, value, mask=i < N)
+     231 :   24fe:   vpbroadcastd ymm0,DWORD PTR [rip+0x1309]        # 3810 <_fini+0xe20>
+       0 :   2507:   vpcmpgtd ymm3,ymm0,ymm3
+       0 :   250b:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x3e0],ymm3,ymm4
+         : 866  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     536 :   2515:   vaddps ymm3,ymm15,ymm6
+         : 868  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   2519:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xaff]        # 3020 <_fini+0x630>
+         : 870  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     180 :   2521:   vdivps ymm3,ymm3,ymm1
+         : 872  tl.store(dst + i, value, mask=i < N)
+       0 :   2525:   vpcmpgtd ymm4,ymm0,ymm4
+       7 :   2529:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x3c0],ymm4,ymm3
+         : 875  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     542 :   2533:   vaddps ymm3,ymm7,YMMWORD PTR [rsp+0x420]
+         : 877  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       4 :   253c:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xafc]        # 3040 <_fini+0x650>
+         : 879  tl.store(dst + i, value, mask=i < N)
+       2 :   2544:   vpcmpgtd ymm4,ymm0,ymm4
+         : 881  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2548:   vdivps ymm3,ymm3,ymm1
+         : 883  tl.store(dst + i, value, mask=i < N)
+      34 :   254c:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x3a0],ymm4,ymm3
+         : 885  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     310 :   2556:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x480]
+         : 887  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      15 :   255f:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xaf9]        # 3060 <_fini+0x670>
+       0 :   2567:   vmovups ymm2,YMMWORD PTR [rsp+0x1c0]
+         : 890  tl.store(dst + i, value, mask=i < N)
+     149 :   2570:   vpcmpgtd ymm4,ymm0,ymm4
+         : 892  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2574:   vdivps ymm3,ymm3,ymm1
+         : 894  tl.store(dst + i, value, mask=i < N)
+      61 :   2578:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x380],ymm4,ymm3
+         : 896  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     265 :   2582:   vaddps ymm3,ymm8,YMMWORD PTR [rsp+0x4a0]
+         : 898  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      12 :   258b:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xaed]        # 3080 <_fini+0x690>
+         : 900  tl.store(dst + i, value, mask=i < N)
+       0 :   2593:   vpcmpgtd ymm4,ymm0,ymm4
+         : 902  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2597:   vdivps ymm3,ymm3,ymm1
+         : 904  tl.store(dst + i, value, mask=i < N)
+      46 :   259b:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x360],ymm4,ymm3
+         : 906  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     454 :   25a5:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x4c0]
+         : 908  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       3 :   25ae:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xaea]        # 30a0 <_fini+0x6b0>
+       0 :   25b6:   vmovups ymm2,YMMWORD PTR [rsp+0xa0]
+         : 911  tl.store(dst + i, value, mask=i < N)
+       0 :   25bf:   vpcmpgtd ymm4,ymm0,ymm4
+         : 913  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   25c3:   vdivps ymm3,ymm3,ymm1
+         : 915  tl.store(dst + i, value, mask=i < N)
+      45 :   25c7:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x340],ymm4,ymm3
+         : 917  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     326 :   25d1:   vaddps ymm3,ymm9,YMMWORD PTR [rsp+0x580]
+         : 919  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+     138 :   25da:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xade]        # 30c0 <_fini+0x6d0>
+         : 921  tl.store(dst + i, value, mask=i < N)
+       3 :   25e2:   vpcmpgtd ymm4,ymm0,ymm4
+         : 923  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   25e6:   vdivps ymm3,ymm3,ymm1
+         : 925  tl.store(dst + i, value, mask=i < N)
+     130 :   25ea:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x320],ymm4,ymm3
+         : 927  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     781 :   25f4:   vaddps ymm3,ymm10,YMMWORD PTR [rsp+0x500]
+         : 929  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       5 :   25fd:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xadb]        # 30e0 <_fini+0x6f0>
+         : 931  tl.store(dst + i, value, mask=i < N)
+       0 :   2605:   vpcmpgtd ymm4,ymm0,ymm4
+         : 933  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2609:   vdivps ymm3,ymm3,ymm1
+         : 935  tl.store(dst + i, value, mask=i < N)
+      12 :   260d:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x300],ymm4,ymm3
+         : 937  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     312 :   2617:   vaddps ymm3,ymm12,YMMWORD PTR [rsp+0x540]
+         : 939  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       9 :   2620:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xad8]        # 3100 <_fini+0x710>
+         : 941  tl.store(dst + i, value, mask=i < N)
+       1 :   2628:   vpcmpgtd ymm4,ymm0,ymm4
+         : 943  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   262c:   vdivps ymm3,ymm3,ymm1
+         : 945  tl.store(dst + i, value, mask=i < N)
+      89 :   2630:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x2e0],ymm4,ymm3
+         : 947  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     373 :   263a:   vaddps ymm3,ymm11,YMMWORD PTR [rsp+0x280]
+         : 949  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   2643:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xad5]        # 3120 <_fini+0x730>
+         : 951  tl.store(dst + i, value, mask=i < N)
+       1 :   264b:   vpcmpgtd ymm4,ymm0,ymm4
+         : 953  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   264f:   vdivps ymm3,ymm3,ymm1
+         : 955  tl.store(dst + i, value, mask=i < N)
+      16 :   2653:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x2c0],ymm4,ymm3
+         : 957  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     247 :   265d:   vaddps ymm3,ymm13,YMMWORD PTR [rsp+0x1e0]
+         : 959  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   2666:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xad2]        # 3140 <_fini+0x750>
+         : 961  tl.store(dst + i, value, mask=i < N)
+       0 :   266e:   vpcmpgtd ymm4,ymm0,ymm4
+         : 963  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2672:   vdivps ymm3,ymm3,ymm1
+         : 965  tl.store(dst + i, value, mask=i < N)
+      70 :   2676:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x2a0],ymm4,ymm3
+         : 967  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     381 :   2680:   vaddps ymm3,ymm14,YMMWORD PTR [rsp+0x200]
+         : 969  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      12 :   2689:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xacf]        # 3160 <_fini+0x770>
+         : 971  tl.store(dst + i, value, mask=i < N)
+       0 :   2691:   vpcmpgtd ymm4,ymm0,ymm4
+         : 973  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2695:   vdivps ymm3,ymm3,ymm1
+         : 975  tl.store(dst + i, value, mask=i < N)
+      12 :   2699:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x280],ymm4,ymm3
+         : 977  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     257 :   26a3:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x360]
+         : 979  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       5 :   26ac:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xacc]        # 3180 <_fini+0x790>
+       5 :   26b4:   vmovups ymm2,YMMWORD PTR [rsp+0x20]
+         : 982  tl.store(dst + i, value, mask=i < N)
+       0 :   26ba:   vpcmpgtd ymm4,ymm0,ymm4
+         : 984  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   26be:   vdivps ymm3,ymm3,ymm1
+         : 986  tl.store(dst + i, value, mask=i < N)
+      72 :   26c2:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x260],ymm4,ymm3
+         : 988  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     520 :   26cc:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x2a0]
+         : 990  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       3 :   26d5:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xac3]        # 31a0 <_fini+0x7b0>
+       2 :   26dd:   vmovups ymm2,YMMWORD PTR [rsp+0x80]
+         : 993  tl.store(dst + i, value, mask=i < N)
+     174 :   26e6:   vpcmpgtd ymm4,ymm0,ymm4
+         : 995  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   26ea:   vdivps ymm3,ymm3,ymm1
+         : 997  tl.store(dst + i, value, mask=i < N)
+      11 :   26ee:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x240],ymm4,ymm3
+         : 999  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     236 :   26f8:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x2c0]
+         : 1001 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      12 :   2701:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xab7]        # 31c0 <_fini+0x7d0>
+       2 :   2709:   vmovups ymm2,YMMWORD PTR [rsp]
+         : 1004 tl.store(dst + i, value, mask=i < N)
+       3 :   270e:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1006 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2712:   vdivps ymm3,ymm3,ymm1
+         : 1008 tl.store(dst + i, value, mask=i < N)
+     111 :   2716:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x220],ymm4,ymm3
+         : 1010 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     462 :   2720:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x2e0]
+         : 1012 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   2729:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xaaf]        # 31e0 <_fini+0x7f0>
+       1 :   2731:   vmovups ymm2,YMMWORD PTR [rsp+0x60]
+         : 1015 tl.store(dst + i, value, mask=i < N)
+      58 :   2737:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1017 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   273b:   vdivps ymm3,ymm3,ymm1
+         : 1019 tl.store(dst + i, value, mask=i < N)
+       9 :   273f:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x200],ymm4,ymm3
+         : 1021 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     303 :   2749:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x300]
+         : 1023 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       5 :   2752:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xaa6]        # 3200 <_fini+0x810>
+       3 :   275a:   vmovups ymm2,YMMWORD PTR [rsp-0x40]
+         : 1026 tl.store(dst + i, value, mask=i < N)
+       1 :   2760:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1028 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2764:   vdivps ymm3,ymm3,ymm1
+         : 1030 tl.store(dst + i, value, mask=i < N)
+      92 :   2768:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x1e0],ymm4,ymm3
+         : 1032 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     470 :   2772:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x320]
+         : 1034 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       2 :   277b:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa9d]        # 3220 <_fini+0x830>
+      32 :   2783:   vmovups ymm2,YMMWORD PTR [rsp+0x40]
+         : 1037 tl.store(dst + i, value, mask=i < N)
+       0 :   2789:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1039 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       7 :   278d:   vdivps ymm3,ymm3,ymm1
+         : 1041 tl.store(dst + i, value, mask=i < N)
+      13 :   2791:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x1c0],ymm4,ymm3
+         : 1043 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     508 :   279b:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x220]
+         : 1045 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   27a4:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa94]        # 3240 <_fini+0x850>
+       5 :   27ac:   vmovups ymm2,YMMWORD PTR [rsp+0x120]
+         : 1048 tl.store(dst + i, value, mask=i < N)
+       1 :   27b5:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1050 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   27b9:   vdivps ymm3,ymm3,ymm1
+         : 1052 tl.store(dst + i, value, mask=i < N)
+      16 :   27bd:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x1a0],ymm4,ymm3
+         : 1054 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     384 :   27c7:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x340]
+         : 1056 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       9 :   27d0:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa88]        # 3260 <_fini+0x870>
+       5 :   27d8:   vmovups ymm2,YMMWORD PTR [rsp-0x20]
+         : 1059 tl.store(dst + i, value, mask=i < N)
+     184 :   27de:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1061 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   27e2:   vdivps ymm3,ymm3,ymm1
+         : 1063 tl.store(dst + i, value, mask=i < N)
+     126 :   27e6:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x180],ymm4,ymm3
+         : 1065 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     287 :   27f0:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x380]
+         : 1067 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       4 :   27f9:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa7f]        # 3280 <_fini+0x890>
+       2 :   2801:   vmovups ymm2,YMMWORD PTR [rsp-0x80]
+         : 1070 tl.store(dst + i, value, mask=i < N)
+       0 :   2807:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1072 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   280b:   vdivps ymm3,ymm3,ymm1
+         : 1074 tl.store(dst + i, value, mask=i < N)
+      59 :   280f:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x160],ymm4,ymm3
+         : 1076 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     509 :   2819:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x240]
+         : 1078 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   2822:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa76]        # 32a0 <_fini+0x8b0>
+       3 :   282a:   vmovups ymm2,YMMWORD PTR [rsp-0x60]
+         : 1081 tl.store(dst + i, value, mask=i < N)
+      66 :   2830:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1083 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2834:   vdivps ymm3,ymm3,ymm1
+         : 1085 tl.store(dst + i, value, mask=i < N)
+      50 :   2838:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x140],ymm4,ymm3
+         : 1087 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     262 :   2842:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x260]
+         : 1089 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   284b:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa6d]        # 32c0 <_fini+0x8d0>
+       3 :   2853:   vmovups ymm2,YMMWORD PTR [rsp+0x140]
+         : 1092 tl.store(dst + i, value, mask=i < N)
+       0 :   285c:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1094 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2860:   vdivps ymm3,ymm3,ymm1
+         : 1096 tl.store(dst + i, value, mask=i < N)
+     105 :   2864:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x120],ymm4,ymm3
+         : 1098 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     504 :   286e:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x4e0]
+         : 1100 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       1 :   2877:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa61]        # 32e0 <_fini+0x8f0>
+       0 :   287f:   vmovups ymm2,YMMWORD PTR [rsp+0xc0]
+         : 1103 tl.store(dst + i, value, mask=i < N)
+       0 :   2888:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1105 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   288c:   vdivps ymm3,ymm3,ymm1
+         : 1107 tl.store(dst + i, value, mask=i < N)
+      27 :   2890:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x100],ymm4,ymm3
+         : 1109 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     260 :   289a:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x520]
+         : 1111 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      11 :   28a3:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa55]        # 3300 <_fini+0x910>
+      11 :   28ab:   vmovups ymm2,YMMWORD PTR [rsp+0x100]
+         : 1114 tl.store(dst + i, value, mask=i < N)
+       0 :   28b4:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1116 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   28b8:   vdivps ymm3,ymm3,ymm1
+         : 1118 tl.store(dst + i, value, mask=i < N)
+      40 :   28bc:   vmaskmovps YMMWORD PTR [rsi+rax*4+0xe0],ymm4,ymm3
+         : 1120 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     540 :   28c6:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x560]
+         : 1122 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   28cf:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa49]        # 3320 <_fini+0x930>
+       0 :   28d7:   vmovups ymm2,YMMWORD PTR [rsp+0xe0]
+         : 1125 tl.store(dst + i, value, mask=i < N)
+       1 :   28e0:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1127 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   28e4:   vdivps ymm3,ymm3,ymm1
+         : 1129 tl.store(dst + i, value, mask=i < N)
+      37 :   28e8:   vmaskmovps YMMWORD PTR [rsi+rax*4+0xc0],ymm4,ymm3
+         : 1131 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     313 :   28f2:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x5a0]
+         : 1133 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       3 :   28fb:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa3d]        # 3340 <_fini+0x950>
+       4 :   2903:   vmovups ymm2,YMMWORD PTR [rsp+0x160]
+         : 1136 tl.store(dst + i, value, mask=i < N)
+       0 :   290c:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1138 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2910:   vdivps ymm3,ymm3,ymm1
+         : 1140 tl.store(dst + i, value, mask=i < N)
+      60 :   2914:   vmaskmovps YMMWORD PTR [rsi+rax*4+0xa0],ymm4,ymm3
+         : 1142 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     537 :   291e:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x5c0]
+         : 1144 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   2927:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa31]        # 3360 <_fini+0x970>
+       0 :   292f:   vmovups ymm2,YMMWORD PTR [rsp+0x180]
+         : 1147 tl.store(dst + i, value, mask=i < N)
+       0 :   2938:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1149 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   293c:   vdivps ymm3,ymm3,ymm1
+         : 1151 tl.store(dst + i, value, mask=i < N)
+      19 :   2940:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x80],ymm4,ymm3
+         : 1153 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     305 :   294a:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x5e0]
+         : 1155 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   2953:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa25]        # 3380 <_fini+0x990>
+       4 :   295b:   vmovups ymm2,YMMWORD PTR [rsp+0x3a0]
+         : 1158 tl.store(dst + i, value, mask=i < N)
+       0 :   2964:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1160 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2968:   vdivps ymm3,ymm3,ymm1
+         : 1162 tl.store(dst + i, value, mask=i < N)
+      65 :   296c:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x60],ymm4,ymm3
+         : 1164 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     518 :   2973:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x600]
+         : 1166 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       1 :   297c:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa1c]        # 33a0 <_fini+0x9b0>
+       0 :   2984:   vmovups ymm2,YMMWORD PTR [rsp+0x3c0]
+         : 1169 tl.store(dst + i, value, mask=i < N)
+       0 :   298d:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1171 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2991:   vdivps ymm3,ymm3,ymm1
+         : 1173 tl.store(dst + i, value, mask=i < N)
+      24 :   2995:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x40],ymm4,ymm3
+         : 1175 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     310 :   299c:   vaddps ymm3,ymm2,YMMWORD PTR [rsp+0x620]
+         : 1177 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   29a5:   vpor   ymm4,ymm5,YMMWORD PTR [rip+0xa13]        # 33c0 <_fini+0x9d0>
+      10 :   29ad:   vmovups ymm2,YMMWORD PTR [rsp+0x3e0]
+         : 1180 tl.store(dst + i, value, mask=i < N)
+       1 :   29b6:   vpcmpgtd ymm4,ymm0,ymm4
+         : 1182 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   29ba:   vdivps ymm3,ymm3,ymm1
+         : 1184 tl.store(dst + i, value, mask=i < N)
+      45 :   29be:   vmaskmovps YMMWORD PTR [rsi+rax*4+0x20],ymm4,ymm3
+         : 1186 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     578 :   29c5:   vaddps ymm4,ymm2,YMMWORD PTR [rsp+0x640]
+         : 1188 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      50 :   29ce:   vpor   ymm2,ymm5,YMMWORD PTR [rip+0xa0a]        # 33e0 <_fini+0x9f0>
+         : 1190 tl.store(dst + i, value, mask=i < N)
+       1 :   29d6:   vpcmpgtd ymm0,ymm0,ymm2
+         : 1192 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   29da:   vdivps ymm1,ymm4,ymm1
+         : 1194 tl.store(dst + i, value, mask=i < N)
+     235 :   29de:   vmaskmovps YMMWORD PTR [rsi+rax*4],ymm0,ymm1
+         : 1196 def smooth5_kernel(src, dst, N: tl.constexpr, BLOCK: tl.constexpr):
+     277 :   29e4:   add    rsp,0x7a8
+       4 :   29eb:   vzeroupper
+       0 :   29ee:   ret

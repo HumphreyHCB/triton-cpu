@@ -1,0 +1,1202 @@
+ Samples |	Source code & Disassembly of tmpwoo6whur.so for cycles:P (25518 samples, percent: local period)
+---------------------------------------------------------------------------------------------------------------
+         :
+         :
+         :
+         : 3    Disassembly of section .text:
+         :
+         : 5    0000000000001180 <smooth5_kernel>:
+         : 6    import triton
+         : 7    import triton.language as tl
+         :
+         :
+         : 10   @triton.jit
+         : 11   def smooth5_kernel(src, dst, N: tl.constexpr, BLOCK: tl.constexpr):
+       0 :   1180:   sub    $0x7a8,%rsp
+         : 13   i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   1187:   vmovd  %edx,%xmm0
+       0 :   118b:   shl    $0x8,%edx
+         : 16   interior = (i >= 2) & (i < N - 2)
+         :
+         : 18   a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   118e:   movslq %edx,%rax
+         : 20   i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       4 :   1191:   vpbroadcastd %xmm0,%ymm0
+      71 :   1196:   vpslld $0x8,%ymm0,%ymm2
+         : 23   interior = (i >= 2) & (i < N - 2)
+      31 :   119b:   vpaddd 0x263d(%rip),%ymm2,%ymm14        # 37e0 <_fini+0xdf0>
+       1 :   11a3:   vpbroadcastd 0x2654(%rip),%ymm0        # 3800 <_fini+0xe10>
+       0 :   11ac:   vpor   0x260c(%rip),%ymm2,%ymm13        # 37c0 <_fini+0xdd0>
+       0 :   11b4:   vpor   0x25e4(%rip),%ymm2,%ymm12        # 37a0 <_fini+0xdb0>
+       2 :   11bc:   vpor   0x25bc(%rip),%ymm2,%ymm11        # 3780 <_fini+0xd90>
+       1 :   11c4:   vpor   0x2594(%rip),%ymm2,%ymm10        # 3760 <_fini+0xd70>
+       0 :   11cc:   vpor   0x256c(%rip),%ymm2,%ymm9        # 3740 <_fini+0xd50>
+      29 :   11d4:   vpor   0x2544(%rip),%ymm2,%ymm8        # 3720 <_fini+0xd30>
+       5 :   11dc:   vpor   0x251c(%rip),%ymm2,%ymm7        # 3700 <_fini+0xd10>
+       1 :   11e4:   vpor   0x24f4(%rip),%ymm2,%ymm6        # 36e0 <_fini+0xcf0>
+      22 :   11ec:   vpor   0x24cc(%rip),%ymm2,%ymm5        # 36c0 <_fini+0xcd0>
+      25 :   11f4:   vpor   0x24a4(%rip),%ymm2,%ymm4        # 36a0 <_fini+0xcb0>
+       3 :   11fc:   vpor   0x247c(%rip),%ymm2,%ymm3        # 3680 <_fini+0xc90>
+       2 :   1204:   vpor   0x2454(%rip),%ymm2,%ymm1        # 3660 <_fini+0xc70>
+      17 :   120c:   vmovdqu %ymm2,0x780(%rsp)
+       3 :   1215:   vpminud %ymm0,%ymm14,%ymm15
+       6 :   121a:   vpcmpeqd %ymm15,%ymm14,%ymm15
+      19 :   121f:   vpminud %ymm0,%ymm13,%ymm14
+       7 :   1224:   vpcmpeqd %ymm14,%ymm13,%ymm14
+      15 :   1229:   vpminud %ymm0,%ymm12,%ymm13
+       7 :   122e:   vpcmpeqd %ymm13,%ymm12,%ymm13
+      21 :   1233:   vpminud %ymm0,%ymm11,%ymm12
+       4 :   1238:   vpcmpeqd %ymm12,%ymm11,%ymm11
+       9 :   123d:   vmovdqu %ymm11,0x180(%rsp)
+      48 :   1246:   vpminud %ymm0,%ymm10,%ymm11
+       4 :   124b:   vpcmpeqd %ymm11,%ymm10,%ymm11
+       1 :   1250:   vpminud %ymm0,%ymm9,%ymm10
+       1 :   1255:   vpcmpeqd %ymm10,%ymm9,%ymm10
+       1 :   125a:   vpminud %ymm0,%ymm8,%ymm9
+       4 :   125f:   vpcmpeqd %ymm9,%ymm8,%ymm9
+       2 :   1264:   vpminud %ymm0,%ymm7,%ymm8
+       1 :   1269:   vpcmpeqd %ymm7,%ymm8,%ymm8
+      28 :   126d:   vpminud %ymm0,%ymm6,%ymm7
+       1 :   1272:   vpcmpeqd %ymm7,%ymm6,%ymm7
+       3 :   1276:   vpminud %ymm0,%ymm5,%ymm6
+       1 :   127b:   vpcmpeqd %ymm6,%ymm5,%ymm5
+       5 :   127f:   vmovdqu %ymm5,-0x60(%rsp)
+      53 :   1285:   vpminud %ymm0,%ymm4,%ymm5
+       0 :   128a:   vpcmpeqd %ymm5,%ymm4,%ymm4
+       0 :   128e:   vmovdqu %ymm4,-0x80(%rsp)
+      43 :   1294:   vpminud %ymm0,%ymm3,%ymm4
+       1 :   1299:   vpcmpeqd %ymm4,%ymm3,%ymm3
+         : 66   b = tl.load(src + i - 1, mask=interior, other=0.0)
+         : 67   c = tl.load(src + i, mask=interior, other=0.0)
+         : 68   d = tl.load(src + i + 1, mask=interior, other=0.0)
+         : 69   e = tl.load(src + i + 2, mask=interior, other=0.0)
+         :
+         : 71   value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   129d:   vbroadcastss 0x255e(%rip),%ymm4        # 3804 <_fini+0xe14>
+       0 :   12a6:   vmovdqu %ymm3,-0x20(%rsp)
+         : 74   interior = (i >= 2) & (i < N - 2)
+      24 :   12ac:   vpminud %ymm0,%ymm1,%ymm3
+       1 :   12b1:   vpcmpeqd %ymm3,%ymm1,%ymm5
+       0 :   12b5:   vpor   0x2383(%rip),%ymm2,%ymm1        # 3640 <_fini+0xc50>
+       0 :   12bd:   vpminud %ymm0,%ymm1,%ymm3
+       7 :   12c2:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   12c6:   vmovdqu %ymm1,0x40(%rsp)
+      24 :   12cc:   vpor   0x234c(%rip),%ymm2,%ymm1        # 3620 <_fini+0xc30>
+       2 :   12d4:   vpminud %ymm0,%ymm1,%ymm3
+       1 :   12d9:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   12dd:   vmovdqu %ymm1,-0x40(%rsp)
+      30 :   12e3:   vpor   0x2315(%rip),%ymm2,%ymm1        # 3600 <_fini+0xc10>
+       1 :   12eb:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   12f0:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   12f4:   vmovdqu %ymm1,0x60(%rsp)
+      19 :   12fa:   vpor   0x22de(%rip),%ymm2,%ymm1        # 35e0 <_fini+0xbf0>
+       4 :   1302:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   1307:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       1 :   130b:   vmovdqu %ymm1,(%rsp)
+      29 :   1310:   vpor   0x22a8(%rip),%ymm2,%ymm1        # 35c0 <_fini+0xbd0>
+       1 :   1318:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   131d:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   1321:   vmovdqu %ymm1,0x80(%rsp)
+      26 :   132a:   vpor   0x226e(%rip),%ymm2,%ymm1        # 35a0 <_fini+0xbb0>
+       3 :   1332:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   1337:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   133b:   vmovdqu %ymm1,0x20(%rsp)
+      36 :   1341:   vpor   0x2237(%rip),%ymm2,%ymm1        # 3580 <_fini+0xb90>
+       1 :   1349:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   134e:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   1352:   vmovdqu %ymm1,0xa0(%rsp)
+      25 :   135b:   vpor   0x21fd(%rip),%ymm2,%ymm1        # 3560 <_fini+0xb70>
+       2 :   1363:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   1368:   vpcmpeqd %ymm3,%ymm1,%ymm6
+       0 :   136c:   vpor   0x21cc(%rip),%ymm2,%ymm1        # 3540 <_fini+0xb50>
+      13 :   1374:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   1379:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       3 :   137d:   vmovdqu %ymm1,0x400(%rsp)
+      38 :   1386:   vpor   0x2192(%rip),%ymm2,%ymm1        # 3520 <_fini+0xb30>
+       2 :   138e:   vpminud %ymm0,%ymm1,%ymm3
+       1 :   1393:   vpcmpeqd %ymm3,%ymm1,%ymm12
+       1 :   1397:   vpor   0x2161(%rip),%ymm2,%ymm1        # 3500 <_fini+0xb10>
+       0 :   139f:   vpminud %ymm0,%ymm1,%ymm3
+      11 :   13a4:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       8 :   13a8:   vmovdqu %ymm1,0x1a0(%rsp)
+      44 :   13b1:   vpor   0x2127(%rip),%ymm2,%ymm1        # 34e0 <_fini+0xaf0>
+       6 :   13b9:   vpminud %ymm0,%ymm1,%ymm3
+       1 :   13be:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       2 :   13c2:   vmovdqu %ymm1,0x440(%rsp)
+      26 :   13cb:   vpor   0x20ed(%rip),%ymm2,%ymm1        # 34c0 <_fini+0xad0>
+       1 :   13d3:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   13d8:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       2 :   13dc:   vmovdqu %ymm1,0x1c0(%rsp)
+      38 :   13e5:   vpor   0x20b3(%rip),%ymm2,%ymm1        # 34a0 <_fini+0xab0>
+       4 :   13ed:   vpminud %ymm0,%ymm1,%ymm3
+       1 :   13f2:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   13f6:   vmovdqu %ymm1,0x460(%rsp)
+      45 :   13ff:   vpor   0x2079(%rip),%ymm2,%ymm1        # 3480 <_fini+0xa90>
+       1 :   1407:   vpminud %ymm0,%ymm1,%ymm3
+       1 :   140c:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   1410:   vmovdqu %ymm1,0x6e0(%rsp)
+      19 :   1419:   vpor   0x203f(%rip),%ymm2,%ymm1        # 3460 <_fini+0xa70>
+       2 :   1421:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   1426:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   142a:   vmovdqu %ymm1,0x6a0(%rsp)
+      33 :   1433:   vpor   0x2005(%rip),%ymm2,%ymm1        # 3440 <_fini+0xa50>
+       2 :   143b:   vmovdqu %ymm11,0x160(%rsp)
+       7 :   1444:   vmovdqu %ymm15,0x3e0(%rsp)
+      17 :   144d:   vmovdqu %ymm14,0x3c0(%rsp)
+      19 :   1456:   vmovdqu %ymm10,0xe0(%rsp)
+      28 :   145f:   vmovdqu %ymm12,0x660(%rsp)
+      24 :   1468:   vmovdqu %ymm8,0xc0(%rsp)
+      36 :   1471:   vmovdqu %ymm7,0x140(%rsp)
+      32 :   147a:   vmovdqu %ymm5,0x120(%rsp)
+      28 :   1483:   vmovdqu %ymm13,0x3a0(%rsp)
+      36 :   148c:   vmovdqu %ymm9,0x100(%rsp)
+      32 :   1495:   vmovdqu %ymm6,0x680(%rsp)
+      30 :   149e:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   14a3:   vpcmpeqd %ymm3,%ymm1,%ymm1
+       0 :   14a7:   vmovdqu %ymm1,0x700(%rsp)
+      36 :   14b0:   vpor   0x1f68(%rip),%ymm2,%ymm1        # 3420 <_fini+0xa30>
+       1 :   14b8:   vpminud %ymm0,%ymm1,%ymm3
+       0 :   14bd:   vpcmpeqd %ymm3,%ymm1,%ymm1
+         : 157  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   14c1:   vmaskmovps 0x18(%rdi,%rax,4),%ymm14,%ymm3
+      10 :   14c8:   vmovdqu %ymm1,0x6c0(%rsp)
+         : 160  interior = (i >= 2) & (i < N - 2)
+      25 :   14d1:   vpor   0x1f27(%rip),%ymm2,%ymm1        # 3400 <_fini+0xa10>
+         : 162  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       0 :   14d9:   vmaskmovps 0x7c(%rdi,%rax,4),%ymm11,%ymm2
+         : 164  interior = (i >= 2) & (i < N - 2)
+     311 :   14e0:   vpminud %ymm0,%ymm1,%ymm0
+       0 :   14e5:   vpcmpeqd %ymm0,%ymm1,%ymm0
+         : 167  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       0 :   14e9:   vmaskmovps -0x4(%rdi,%rax,4),%ymm15,%ymm1
+       6 :   14f0:   vmovdqu %ymm0,0x720(%rsp)
+         : 170  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      15 :   14f9:   vmaskmovps -0x8(%rdi,%rax,4),%ymm15,%ymm0
+         : 172  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1500:   vfmadd213ps %ymm0,%ymm4,%ymm1
+         : 174  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       2 :   1505:   vmaskmovps 0x38(%rdi,%rax,4),%ymm13,%ymm0
+       5 :   150c:   vmovups %ymm1,0x640(%rsp)
+         : 177  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      24 :   1515:   vmaskmovps 0x1c(%rdi,%rax,4),%ymm14,%ymm1
+         : 179  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   151c:   vfmadd213ps %ymm3,%ymm4,%ymm1
+       2 :   1521:   vmovups %ymm1,0x620(%rsp)
+         : 182  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      18 :   152a:   vmaskmovps 0x3c(%rdi,%rax,4),%ymm13,%ymm1
+       4 :   1531:   vmovups 0x6e0(%rsp),%ymm13
+         : 185  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   153a:   vfmadd213ps %ymm0,%ymm4,%ymm1
+         : 187  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      34 :   153f:   vmaskmovps 0x78(%rdi,%rax,4),%ymm11,%ymm0
+      11 :   1546:   vmovaps %ymm4,%ymm11
+       9 :   154a:   vmovups %ymm1,0x600(%rsp)
+      29 :   1553:   vmovups 0x180(%rsp),%ymm1
+         : 192  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   155c:   vfmadd213ps %ymm0,%ymm4,%ymm2
+         : 194  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      33 :   1561:   vmaskmovps 0xb8(%rdi,%rax,4),%ymm9,%ymm0
+      26 :   156b:   vmaskmovps 0x58(%rdi,%rax,4),%ymm1,%ymm3
+         : 197  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       1 :   1572:   vmaskmovps 0x5c(%rdi,%rax,4),%ymm1,%ymm1
+       0 :   1579:   vmovups %ymm2,0x5c0(%rsp)
+      69 :   1582:   vmaskmovps 0xfc(%rdi,%rax,4),%ymm7,%ymm2
+         : 201  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      82 :   158c:   vfmadd213ps %ymm3,%ymm4,%ymm1
+         : 203  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      15 :   1591:   vmaskmovps 0x98(%rdi,%rax,4),%ymm10,%ymm3
+       1 :   159b:   vmovups %ymm1,0x5e0(%rsp)
+         : 206  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      21 :   15a4:   vmaskmovps 0x9c(%rdi,%rax,4),%ymm10,%ymm1
+         : 208  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       6 :   15ae:   vfmadd213ps %ymm3,%ymm4,%ymm1
+         : 210  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       8 :   15b3:   vmaskmovps 0xd8(%rdi,%rax,4),%ymm8,%ymm3
+       9 :   15bd:   vmovups %ymm1,0x5a0(%rsp)
+         : 213  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      31 :   15c6:   vmaskmovps 0xbc(%rdi,%rax,4),%ymm9,%ymm1
+      12 :   15d0:   vmovups 0x700(%rsp),%ymm9
+         : 216  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       5 :   15d9:   vfmadd213ps %ymm0,%ymm4,%ymm1
+         : 218  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      19 :   15de:   vmaskmovps 0xf8(%rdi,%rax,4),%ymm7,%ymm0
+      16 :   15e8:   vmovups 0x6c0(%rsp),%ymm7
+       3 :   15f1:   vmovups %ymm1,0x560(%rsp)
+         : 222  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      35 :   15fa:   vmaskmovps 0xdc(%rdi,%rax,4),%ymm8,%ymm1
+       4 :   1604:   vmovaps %ymm11,%ymm8
+         : 225  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1609:   vfmadd213ps %ymm0,%ymm4,%ymm2
+      26 :   160e:   vfmadd213ps %ymm3,%ymm4,%ymm1
+      16 :   1613:   vmovups %ymm2,0x4e0(%rsp)
+      23 :   161c:   vmovups -0x80(%rsp),%ymm2
+       0 :   1622:   vmovups %ymm1,0x520(%rsp)
+      25 :   162b:   vmovups -0x60(%rsp),%ymm1
+         : 232  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       3 :   1631:   vmaskmovps 0x138(%rdi,%rax,4),%ymm2,%ymm0
+      24 :   163b:   vmaskmovps 0x118(%rdi,%rax,4),%ymm1,%ymm3
+         : 235  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       8 :   1645:   vmaskmovps 0x11c(%rdi,%rax,4),%ymm1,%ymm1
+         : 237  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   164f:   vfmadd213ps %ymm3,%ymm4,%ymm1
+       7 :   1654:   vmovups %ymm1,0x260(%rsp)
+         : 240  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      27 :   165d:   vmaskmovps 0x13c(%rdi,%rax,4),%ymm2,%ymm1
+       5 :   1667:   vmaskmovps 0x17c(%rdi,%rax,4),%ymm5,%ymm2
+         : 243  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      39 :   1671:   vfmadd213ps %ymm0,%ymm4,%ymm1
+         : 245  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      21 :   1676:   vmaskmovps 0x178(%rdi,%rax,4),%ymm5,%ymm0
+      10 :   1680:   vmovups %ymm1,0x240(%rsp)
+      31 :   1689:   vmovups -0x20(%rsp),%ymm1
+         : 249  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   168f:   vfmadd213ps %ymm0,%ymm4,%ymm2
+         : 251  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      23 :   1694:   vmaskmovps 0x158(%rdi,%rax,4),%ymm1,%ymm3
+         : 253  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       9 :   169e:   vmaskmovps 0x15c(%rdi,%rax,4),%ymm1,%ymm1
+       4 :   16a8:   vmovups %ymm2,0x340(%rsp)
+      32 :   16b1:   vmovups -0x40(%rsp),%ymm2
+         : 257  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   16b7:   vfmadd213ps %ymm3,%ymm4,%ymm1
+         : 259  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      14 :   16bc:   vmaskmovps 0x1b8(%rdi,%rax,4),%ymm2,%ymm0
+      28 :   16c6:   vmovups %ymm1,0x380(%rsp)
+      19 :   16cf:   vmovups 0x40(%rsp),%ymm1
+       2 :   16d5:   vmaskmovps 0x198(%rdi,%rax,4),%ymm1,%ymm3
+         : 264  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       3 :   16df:   vmaskmovps 0x19c(%rdi,%rax,4),%ymm1,%ymm4
+       0 :   16e9:   vmaskmovps 0x1bc(%rdi,%rax,4),%ymm2,%ymm1
+      15 :   16f3:   vmovups (%rsp),%ymm2
+         : 268  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   16f8:   vfmadd213ps %ymm0,%ymm11,%ymm1
+      32 :   16fd:   vfmadd213ps %ymm3,%ymm11,%ymm4
+         : 271  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      10 :   1702:   vmaskmovps 0x1f8(%rdi,%rax,4),%ymm2,%ymm0
+         : 273  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      34 :   170c:   vmaskmovps 0x1fc(%rdi,%rax,4),%ymm2,%ymm2
+       6 :   1716:   vmovups %ymm1,0x320(%rsp)
+      30 :   171f:   vmovups 0x60(%rsp),%ymm1
+       4 :   1725:   vmovups %ymm4,0x220(%rsp)
+         : 278  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      16 :   172e:   vmaskmovps 0x398(%rdi,%rax,4),%ymm9,%ymm4
+         : 280  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     213 :   1738:   vfmadd213ps %ymm0,%ymm11,%ymm2
+         : 282  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      13 :   173d:   vmaskmovps 0x1d8(%rdi,%rax,4),%ymm1,%ymm3
+         : 284  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       3 :   1747:   vmaskmovps 0x1dc(%rdi,%rax,4),%ymm1,%ymm1
+       4 :   1751:   vmovups %ymm2,0x2e0(%rsp)
+      10 :   175a:   vmovups 0x20(%rsp),%ymm2
+         : 288  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1760:   vfmadd213ps %ymm3,%ymm11,%ymm1
+         : 290  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      13 :   1765:   vmaskmovps 0x238(%rdi,%rax,4),%ymm2,%ymm0
+      14 :   176f:   vmovups %ymm1,0x300(%rsp)
+      32 :   1778:   vmovups 0x80(%rsp),%ymm1
+       0 :   1781:   vmaskmovps 0x218(%rdi,%rax,4),%ymm1,%ymm3
+         : 295  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       2 :   178b:   vmaskmovps 0x21c(%rdi,%rax,4),%ymm1,%ymm1
+         : 297  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1795:   vfmadd213ps %ymm3,%ymm11,%ymm1
+      19 :   179a:   vmovups %ymm1,0x2c0(%rsp)
+         : 300  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      30 :   17a3:   vmaskmovps 0x23c(%rdi,%rax,4),%ymm2,%ymm1
+       6 :   17ad:   vmaskmovps 0x27c(%rdi,%rax,4),%ymm6,%ymm2
+         : 303  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      21 :   17b7:   vfmadd213ps %ymm0,%ymm11,%ymm1
+         : 305  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      20 :   17bc:   vmaskmovps 0x278(%rdi,%rax,4),%ymm6,%ymm0
+         : 307  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       9 :   17c6:   vmaskmovps 0x35c(%rdi,%rax,4),%ymm13,%ymm6
+      36 :   17d0:   vmovups %ymm1,0x2a0(%rsp)
+      13 :   17d9:   vmovups 0xa0(%rsp),%ymm1
+         : 311  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   17e2:   vfmadd213ps %ymm0,%ymm11,%ymm2
+         : 313  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      21 :   17e7:   vmaskmovps 0x2b8(%rdi,%rax,4),%ymm12,%ymm0
+      12 :   17f1:   vmaskmovps 0x258(%rdi,%rax,4),%ymm1,%ymm3
+         : 316  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       2 :   17fb:   vmaskmovps 0x25c(%rdi,%rax,4),%ymm1,%ymm1
+      10 :   1805:   vmovups %ymm2,0x200(%rsp)
+         : 319  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      25 :   180e:   vfmadd213ps %ymm3,%ymm11,%ymm1
+      16 :   1813:   vmovups %ymm1,0x360(%rsp)
+      25 :   181c:   vmovups 0x400(%rsp),%ymm1
+         : 323  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       2 :   1825:   vmaskmovps 0x298(%rdi,%rax,4),%ymm1,%ymm3
+         : 325  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       5 :   182f:   vmaskmovps 0x29c(%rdi,%rax,4),%ymm1,%ymm2
+       4 :   1839:   vmaskmovps 0x2bc(%rdi,%rax,4),%ymm12,%ymm1
+         : 328  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1843:   vfmadd213ps %ymm3,%ymm11,%ymm2
+      17 :   1848:   vfmadd213ps %ymm0,%ymm11,%ymm1
+      21 :   184d:   vmovups %ymm2,0x1e0(%rsp)
+      26 :   1856:   vmovups 0x440(%rsp),%ymm2
+       2 :   185f:   vmovups %ymm1,0x280(%rsp)
+      28 :   1868:   vmovups 0x1a0(%rsp),%ymm1
+         : 335  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   1871:   vmaskmovps 0x2f8(%rdi,%rax,4),%ymm2,%ymm0
+         : 337  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      13 :   187b:   vmaskmovps 0x2fc(%rdi,%rax,4),%ymm2,%ymm14
+       4 :   1885:   vmovups 0x460(%rsp),%ymm2
+         : 340  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      11 :   188e:   vmaskmovps 0x2d8(%rdi,%rax,4),%ymm1,%ymm3
+         : 342  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       5 :   1898:   vmaskmovps 0x2dc(%rdi,%rax,4),%ymm1,%ymm15
+       9 :   18a2:   vmovups 0x1c0(%rsp),%ymm1
+         : 345  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   18ab:   vfmadd213ps %ymm3,%ymm11,%ymm15
+      41 :   18b0:   vfmadd213ps %ymm0,%ymm11,%ymm14
+         : 348  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      28 :   18b5:   vmaskmovps 0x338(%rdi,%rax,4),%ymm2,%ymm0
+         : 350  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       6 :   18bf:   vmaskmovps 0x33c(%rdi,%rax,4),%ymm2,%ymm10
+         : 352  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       9 :   18c9:   vmaskmovps 0x318(%rdi,%rax,4),%ymm1,%ymm3
+         : 354  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      13 :   18d3:   vmaskmovps 0x31c(%rdi,%rax,4),%ymm1,%ymm12
+       1 :   18dd:   vmaskmovps 0x3bc(%rdi,%rax,4),%ymm7,%ymm1
+         : 357  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     236 :   18e7:   vfmadd213ps %ymm3,%ymm11,%ymm12
+      30 :   18ec:   vfmadd213ps %ymm0,%ymm11,%ymm10
+      14 :   18f1:   vmovups 0x6a0(%rsp),%ymm11
+         : 361  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       5 :   18fa:   vmaskmovps 0x358(%rdi,%rax,4),%ymm13,%ymm3
+       0 :   1904:   vmaskmovps 0x378(%rdi,%rax,4),%ymm11,%ymm0
+         : 364  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       7 :   190e:   vmaskmovps 0x37c(%rdi,%rax,4),%ymm11,%ymm5
+         : 366  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       6 :   1918:   vfmadd213ps %ymm3,%ymm8,%ymm6
+         : 368  b = tl.load(src + i - 1, mask=interior, other=0.0)
+      11 :   191d:   vmaskmovps 0x39c(%rdi,%rax,4),%ymm9,%ymm3
+         : 370  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      13 :   1927:   vfmadd213ps %ymm0,%ymm8,%ymm5
+         : 372  a = tl.load(src + i - 2, mask=interior, other=0.0)
+      36 :   192c:   vmaskmovps 0x3b8(%rdi,%rax,4),%ymm7,%ymm0
+         : 374  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      13 :   1936:   vfmadd213ps %ymm4,%ymm8,%ymm3
+      10 :   193b:   vfmadd213ps %ymm0,%ymm8,%ymm1
+      64 :   1940:   vmovaps %ymm1,%ymm2
+       0 :   1944:   vmovups 0x720(%rsp),%ymm1
+         : 379  a = tl.load(src + i - 2, mask=interior, other=0.0)
+       0 :   194d:   vmaskmovps 0x3d8(%rdi,%rax,4),%ymm1,%ymm0
+         : 381  b = tl.load(src + i - 1, mask=interior, other=0.0)
+       5 :   1957:   vmaskmovps 0x3dc(%rdi,%rax,4),%ymm1,%ymm4
+         : 383  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       8 :   1961:   vfmadd213ps %ymm0,%ymm8,%ymm4
+         : 385  c = tl.load(src + i, mask=interior, other=0.0)
+      58 :   1966:   vmaskmovps 0x3e0(%rdi,%rax,4),%ymm1,%ymm8
+         : 387  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   1970:   vbroadcastss 0x1e8f(%rip),%ymm0        # 3808 <_fini+0xe18>
+       1 :   1979:   vmovups 0x460(%rsp),%ymm1
+       3 :   1982:   vfmadd231ps %ymm8,%ymm0,%ymm4
+     111 :   1987:   vmovups 0x5a0(%rsp),%ymm8
+       2 :   1990:   vmovups %ymm4,0x760(%rsp)
+         : 393  c = tl.load(src + i, mask=interior, other=0.0)
+      64 :   1999:   vmaskmovps 0x3c0(%rdi,%rax,4),%ymm7,%ymm4
+       1 :   19a3:   vmaskmovps 0x3a0(%rdi,%rax,4),%ymm9,%ymm7
+       0 :   19ad:   vmovups 0x3a0(%rsp),%ymm9
+         : 397  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   19b6:   vfmadd231ps %ymm4,%ymm0,%ymm2
+         : 399  c = tl.load(src + i, mask=interior, other=0.0)
+       9 :   19bb:   vmaskmovps 0x380(%rdi,%rax,4),%ymm11,%ymm4
+         : 401  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   19c5:   vfmadd231ps %ymm7,%ymm0,%ymm3
+       2 :   19ca:   vmovups 0x560(%rsp),%ymm11
+       0 :   19d3:   vmovups %ymm2,0x740(%rsp)
+      31 :   19dc:   vmovups 0x600(%rsp),%ymm2
+       1 :   19e5:   vmovups %ymm3,0x420(%rsp)
+       5 :   19ee:   vmovups 0x3e0(%rsp),%ymm3
+       0 :   19f7:   vfmadd231ps %ymm4,%ymm0,%ymm5
+         : 409  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   19fc:   vmaskmovps 0x360(%rdi,%rax,4),%ymm13,%ymm4
+       2 :   1a06:   vmovups 0x520(%rsp),%ymm13
+       0 :   1a0f:   vmovups %ymm5,0x480(%rsp)
+       5 :   1a18:   vmovups 0x5e0(%rsp),%ymm5
+         : 414  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      31 :   1a21:   vfmadd231ps %ymm4,%ymm0,%ymm6
+         : 416  c = tl.load(src + i, mask=interior, other=0.0)
+       6 :   1a26:   vmaskmovps 0x340(%rdi,%rax,4),%ymm1,%ymm4
+       4 :   1a30:   vmovups 0x440(%rsp),%ymm1
+       1 :   1a39:   vmovups %ymm6,0x4a0(%rsp)
+      16 :   1a42:   vmovups 0x5c0(%rsp),%ymm6
+         : 421  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1a4b:   vfmadd231ps %ymm4,%ymm0,%ymm10
+         : 423  c = tl.load(src + i, mask=interior, other=0.0)
+       9 :   1a50:   vmaskmovps 0x300(%rdi,%rax,4),%ymm1,%ymm4
+       2 :   1a5a:   vmovups 0x1c0(%rsp),%ymm1
+      23 :   1a63:   vmovups %ymm10,0x4c0(%rsp)
+      20 :   1a6c:   vmovups 0x180(%rsp),%ymm10
+       2 :   1a75:   vmaskmovps 0x320(%rdi,%rax,4),%ymm1,%ymm7
+       0 :   1a7f:   vmovups 0x1a0(%rsp),%ymm1
+         : 430  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1a88:   vfmadd231ps %ymm4,%ymm0,%ymm14
+      12 :   1a8d:   vmovups %ymm14,0x500(%rsp)
+      29 :   1a96:   vmovups 0x4e0(%rsp),%ymm14
+         : 434  c = tl.load(src + i, mask=interior, other=0.0)
+       1 :   1a9f:   vmaskmovps 0x2e0(%rdi,%rax,4),%ymm1,%ymm4
+      20 :   1aa9:   vmovups 0x660(%rsp),%ymm1
+         : 437  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       6 :   1ab2:   vfmadd231ps %ymm7,%ymm0,%ymm12
+       5 :   1ab7:   vmovups %ymm12,0x580(%rsp)
+      23 :   1ac0:   vmovups 0x640(%rsp),%ymm12
+       0 :   1ac9:   vfmadd231ps %ymm4,%ymm0,%ymm15
+         : 442  c = tl.load(src + i, mask=interior, other=0.0)
+      22 :   1ace:   vmaskmovps 0x2c0(%rdi,%rax,4),%ymm1,%ymm4
+       4 :   1ad8:   vmovups 0x280(%rsp),%ymm1
+       2 :   1ae1:   vmovups %ymm15,0x540(%rsp)
+      46 :   1aea:   vmaskmovps (%rdi,%rax,4),%ymm3,%ymm15
+         : 447  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1af0:   vfmadd231ps %ymm4,%ymm0,%ymm1
+      18 :   1af5:   vmovups %ymm1,0x280(%rsp)
+      35 :   1afe:   vmovups 0x680(%rsp),%ymm1
+       0 :   1b07:   vfmadd231ps %ymm15,%ymm0,%ymm12
+       5 :   1b0c:   vmovups 0x740(%rsp),%ymm15
+         : 453  c = tl.load(src + i, mask=interior, other=0.0)
+      13 :   1b15:   vmaskmovps 0x280(%rdi,%rax,4),%ymm1,%ymm4
+       3 :   1b1f:   vmovups 0x400(%rsp),%ymm1
+       5 :   1b28:   vmaskmovps 0x2a0(%rdi,%rax,4),%ymm1,%ymm7
+       2 :   1b32:   vmovups 0x1e0(%rsp),%ymm1
+         : 458  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1b3b:   vfmadd231ps %ymm7,%ymm0,%ymm1
+      43 :   1b40:   vmovups %ymm1,0x1e0(%rsp)
+      60 :   1b49:   vmovups 0x200(%rsp),%ymm1
+       0 :   1b52:   vfmadd231ps %ymm4,%ymm0,%ymm1
+       7 :   1b57:   vmovups %ymm1,0x200(%rsp)
+      27 :   1b60:   vmovups 0xa0(%rsp),%ymm1
+         : 465  c = tl.load(src + i, mask=interior, other=0.0)
+       1 :   1b69:   vmaskmovps 0x260(%rdi,%rax,4),%ymm1,%ymm4
+       0 :   1b73:   vmovups 0x360(%rsp),%ymm1
+         : 468  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1b7c:   vfmadd231ps %ymm4,%ymm0,%ymm1
+      25 :   1b81:   vmovups %ymm1,0x360(%rsp)
+      44 :   1b8a:   vmovups 0x20(%rsp),%ymm1
+         : 472  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1b90:   vmaskmovps 0x240(%rdi,%rax,4),%ymm1,%ymm4
+       2 :   1b9a:   vmovups 0x2a0(%rsp),%ymm1
+         : 475  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1ba3:   vfmadd231ps %ymm4,%ymm0,%ymm1
+      22 :   1ba8:   vmovups %ymm1,0x2a0(%rsp)
+      43 :   1bb1:   vmovups (%rsp),%ymm1
+         : 479  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1bb6:   vmaskmovps 0x200(%rdi,%rax,4),%ymm1,%ymm4
+       1 :   1bc0:   vmovups 0x80(%rsp),%ymm1
+       2 :   1bc9:   vmaskmovps 0x220(%rdi,%rax,4),%ymm1,%ymm7
+       1 :   1bd3:   vmovups 0x2c0(%rsp),%ymm1
+         : 484  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1bdc:   vfmadd231ps %ymm7,%ymm0,%ymm1
+      15 :   1be1:   vmovups %ymm1,0x2c0(%rsp)
+      46 :   1bea:   vmovups 0x2e0(%rsp),%ymm1
+       3 :   1bf3:   vfmadd231ps %ymm4,%ymm0,%ymm1
+       3 :   1bf8:   vmovups %ymm1,0x2e0(%rsp)
+      24 :   1c01:   vmovups 0x60(%rsp),%ymm1
+         : 491  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1c07:   vmaskmovps 0x1e0(%rdi,%rax,4),%ymm1,%ymm4
+       4 :   1c11:   vmovups 0x300(%rsp),%ymm1
+         : 494  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1c1a:   vfmadd231ps %ymm4,%ymm0,%ymm1
+      14 :   1c1f:   vmovups %ymm1,0x300(%rsp)
+      54 :   1c28:   vmovups -0x40(%rsp),%ymm1
+         : 498  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1c2e:   vmaskmovps 0x1c0(%rdi,%rax,4),%ymm1,%ymm4
+       1 :   1c38:   vmovups 0x320(%rsp),%ymm1
+         : 501  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1c41:   vfmadd231ps %ymm4,%ymm0,%ymm1
+      15 :   1c46:   vmovups %ymm1,0x320(%rsp)
+      41 :   1c4f:   vmovups 0x120(%rsp),%ymm1
+         : 505  c = tl.load(src + i, mask=interior, other=0.0)
+       3 :   1c58:   vmaskmovps 0x180(%rdi,%rax,4),%ymm1,%ymm4
+       1 :   1c62:   vmovups 0x40(%rsp),%ymm1
+       4 :   1c68:   vmaskmovps 0x1a0(%rdi,%rax,4),%ymm1,%ymm7
+       1 :   1c72:   vmovups 0x220(%rsp),%ymm1
+         : 510  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1c7b:   vfmadd231ps %ymm7,%ymm0,%ymm1
+      30 :   1c80:   vmovups %ymm1,0x220(%rsp)
+      61 :   1c89:   vmovups 0x340(%rsp),%ymm1
+       1 :   1c92:   vfmadd231ps %ymm4,%ymm0,%ymm1
+       2 :   1c97:   vmovups %ymm1,0x340(%rsp)
+      30 :   1ca0:   vmovups -0x20(%rsp),%ymm1
+         : 517  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1ca6:   vmaskmovps 0x160(%rdi,%rax,4),%ymm1,%ymm4
+       0 :   1cb0:   vmovups 0x380(%rsp),%ymm1
+         : 520  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1cb9:   vfmadd231ps %ymm4,%ymm0,%ymm1
+      19 :   1cbe:   vmovups %ymm1,0x380(%rsp)
+      44 :   1cc7:   vmovups -0x80(%rsp),%ymm1
+         : 524  c = tl.load(src + i, mask=interior, other=0.0)
+       2 :   1ccd:   vmaskmovps 0x140(%rdi,%rax,4),%ymm1,%ymm4
+       7 :   1cd7:   vmovups 0x240(%rsp),%ymm1
+         : 527  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1ce0:   vfmadd231ps %ymm4,%ymm0,%ymm1
+      10 :   1ce5:   vmovups %ymm1,0x240(%rsp)
+      38 :   1cee:   vmovups 0x140(%rsp),%ymm1
+         : 531  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1cf7:   vmaskmovps 0x100(%rdi,%rax,4),%ymm1,%ymm4
+       0 :   1d01:   vmovups -0x60(%rsp),%ymm1
+       3 :   1d07:   vmaskmovps 0x120(%rdi,%rax,4),%ymm1,%ymm7
+       3 :   1d11:   vmovups 0x260(%rsp),%ymm1
+         : 536  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1d1a:   vfmadd231ps %ymm4,%ymm0,%ymm14
+       8 :   1d1f:   vfmadd231ps %ymm7,%ymm0,%ymm1
+      34 :   1d24:   vmovups %ymm1,0x260(%rsp)
+      64 :   1d2d:   vmovups 0xc0(%rsp),%ymm1
+         : 541  c = tl.load(src + i, mask=interior, other=0.0)
+       0 :   1d36:   vmaskmovps 0xe0(%rdi,%rax,4),%ymm1,%ymm4
+       0 :   1d40:   vmovups 0x100(%rsp),%ymm1
+         : 544  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   1d49:   vfmadd231ps %ymm4,%ymm0,%ymm13
+         : 546  c = tl.load(src + i, mask=interior, other=0.0)
+       5 :   1d4e:   vmaskmovps 0xc0(%rdi,%rax,4),%ymm1,%ymm4
+       1 :   1d58:   vmovups 0x160(%rsp),%ymm1
+         : 549  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       5 :   1d61:   vfmadd231ps %ymm4,%ymm0,%ymm11
+         : 551  c = tl.load(src + i, mask=interior, other=0.0)
+      21 :   1d66:   vmaskmovps 0x80(%rdi,%rax,4),%ymm1,%ymm4
+      20 :   1d70:   vmovups 0xe0(%rsp),%ymm1
+         : 554  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1d79:   vfmadd231ps %ymm4,%ymm0,%ymm6
+         : 556  c = tl.load(src + i, mask=interior, other=0.0)
+      43 :   1d7e:   vmaskmovps 0x60(%rdi,%rax,4),%ymm10,%ymm4
+       1 :   1d85:   vmaskmovps 0xa0(%rdi,%rax,4),%ymm1,%ymm7
+       1 :   1d8f:   vmovups 0x620(%rsp),%ymm1
+         : 560  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1d98:   vfmadd231ps %ymm4,%ymm0,%ymm5
+         : 562  c = tl.load(src + i, mask=interior, other=0.0)
+      30 :   1d9d:   vmaskmovps 0x40(%rdi,%rax,4),%ymm9,%ymm4
+         : 564  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1da4:   vfmadd231ps %ymm7,%ymm0,%ymm8
+      38 :   1da9:   vfmadd231ps %ymm4,%ymm0,%ymm2
+      24 :   1dae:   vmovups 0x3c0(%rsp),%ymm4
+         : 568  c = tl.load(src + i, mask=interior, other=0.0)
+       1 :   1db7:   vmaskmovps 0x20(%rdi,%rax,4),%ymm4,%ymm7
+         : 570  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1dbe:   vfmadd231ps %ymm7,%ymm0,%ymm1
+         : 572  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      38 :   1dc3:   vmaskmovps 0x4(%rdi,%rax,4),%ymm3,%ymm0
+       2 :   1dca:   vbroadcastss 0x1a31(%rip),%ymm3        # 3804 <_fini+0xe14>
+       0 :   1dd3:   vmovups 0x460(%rsp),%ymm7
+         : 576  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1ddc:   vfmadd231ps %ymm0,%ymm3,%ymm12
+         : 578  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      30 :   1de1:   vmaskmovps 0x24(%rdi,%rax,4),%ymm4,%ymm0
+       9 :   1de8:   vmaskmovps 0x44(%rdi,%rax,4),%ymm9,%ymm4
+       6 :   1def:   vmovups 0x1c0(%rsp),%ymm9
+       0 :   1df8:   vmovups %ymm12,0x640(%rsp)
+      55 :   1e01:   vmovups 0x1a0(%rsp),%ymm12
+         : 584  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1e0a:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 586  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      49 :   1e0f:   vmaskmovps 0x64(%rdi,%rax,4),%ymm10,%ymm0
+         : 588  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1e16:   vfmadd231ps %ymm4,%ymm3,%ymm2
+       8 :   1e1b:   vmovups 0x440(%rsp),%ymm10
+       0 :   1e24:   vmovups %ymm1,0x620(%rsp)
+      64 :   1e2d:   vmovups 0x100(%rsp),%ymm1
+       0 :   1e36:   vmovups %ymm2,0x600(%rsp)
+      16 :   1e3f:   vmovups 0x6c0(%rsp),%ymm2
+       0 :   1e48:   vfmadd231ps %ymm0,%ymm3,%ymm5
+       3 :   1e4d:   vmovups 0x160(%rsp),%ymm0
+         : 597  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       1 :   1e56:   vmaskmovps 0xc4(%rdi,%rax,4),%ymm1,%ymm4
+       0 :   1e60:   vmovups 0x260(%rsp),%ymm1
+       0 :   1e69:   vmovups %ymm5,0x5e0(%rsp)
+      30 :   1e72:   vmovups 0x700(%rsp),%ymm5
+       0 :   1e7b:   vmaskmovps 0x84(%rdi,%rax,4),%ymm0,%ymm0
+         : 603  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       7 :   1e85:   vfmadd231ps %ymm4,%ymm3,%ymm11
+       6 :   1e8a:   vfmadd231ps %ymm0,%ymm3,%ymm6
+      32 :   1e8f:   vmovups 0xe0(%rsp),%ymm0
+       0 :   1e98:   vmovups %ymm11,0x560(%rsp)
+      18 :   1ea1:   vmovups 0x660(%rsp),%ymm11
+       4 :   1eaa:   vmovups %ymm6,0x5c0(%rsp)
+      45 :   1eb3:   vmovups 0x6a0(%rsp),%ymm6
+         : 611  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1ebc:   vmaskmovps 0xa4(%rdi,%rax,4),%ymm0,%ymm0
+         : 613  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      11 :   1ec6:   vfmadd231ps %ymm0,%ymm3,%ymm8
+      56 :   1ecb:   vmovups 0xc0(%rsp),%ymm0
+       0 :   1ed4:   vmovups %ymm8,0x5a0(%rsp)
+      54 :   1edd:   vmovups 0x6e0(%rsp),%ymm8
+         : 618  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1ee6:   vmaskmovps 0xe4(%rdi,%rax,4),%ymm0,%ymm0
+         : 620  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1ef0:   vfmadd231ps %ymm0,%ymm3,%ymm13
+      21 :   1ef5:   vmovups 0x140(%rsp),%ymm0
+       0 :   1efe:   vmovups %ymm13,0x520(%rsp)
+      62 :   1f07:   vmovups 0x400(%rsp),%ymm13
+         : 625  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1f10:   vmaskmovps 0x104(%rdi,%rax,4),%ymm0,%ymm0
+         : 627  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   1f1a:   vfmadd231ps %ymm0,%ymm3,%ymm14
+       8 :   1f1f:   vmovups -0x60(%rsp),%ymm0
+       2 :   1f25:   vmovups %ymm14,0x4e0(%rsp)
+      45 :   1f2e:   vmovups 0x680(%rsp),%ymm14
+         : 632  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1f37:   vmaskmovps 0x124(%rdi,%rax,4),%ymm0,%ymm0
+         : 634  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   1f41:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      21 :   1f46:   vmovups -0x20(%rsp),%ymm0
+       1 :   1f4c:   vmovups %ymm1,0x260(%rsp)
+      53 :   1f55:   vmovups -0x80(%rsp),%ymm1
+         : 639  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1f5b:   vmaskmovps 0x164(%rdi,%rax,4),%ymm0,%ymm0
+       5 :   1f65:   vmaskmovps 0x144(%rdi,%rax,4),%ymm1,%ymm4
+       7 :   1f6f:   vmovups 0x240(%rsp),%ymm1
+         : 643  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   1f78:   vfmadd231ps %ymm4,%ymm3,%ymm1
+      10 :   1f7d:   vmovups %ymm1,0x240(%rsp)
+      53 :   1f86:   vmovups 0x380(%rsp),%ymm1
+       1 :   1f8f:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      12 :   1f94:   vmovups 0x120(%rsp),%ymm0
+       1 :   1f9d:   vmovups %ymm1,0x380(%rsp)
+      30 :   1fa6:   vmovups 0x340(%rsp),%ymm1
+         : 651  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1faf:   vmaskmovps 0x184(%rdi,%rax,4),%ymm0,%ymm0
+         : 653  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   1fb9:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      16 :   1fbe:   vmovups 0x40(%rsp),%ymm0
+       7 :   1fc4:   vmovups %ymm1,0x340(%rsp)
+      38 :   1fcd:   vmovups 0x220(%rsp),%ymm1
+         : 658  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1fd6:   vmaskmovps 0x1a4(%rdi,%rax,4),%ymm0,%ymm0
+         : 660  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       7 :   1fe0:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      32 :   1fe5:   vmovups 0x60(%rsp),%ymm0
+       1 :   1feb:   vmovups %ymm1,0x220(%rsp)
+      52 :   1ff4:   vmovups -0x40(%rsp),%ymm1
+         : 665  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   1ffa:   vmaskmovps 0x1e4(%rdi,%rax,4),%ymm0,%ymm0
+       8 :   2004:   vmaskmovps 0x1c4(%rdi,%rax,4),%ymm1,%ymm4
+       3 :   200e:   vmovups 0x320(%rsp),%ymm1
+         : 669  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       4 :   2017:   vfmadd231ps %ymm4,%ymm3,%ymm1
+      26 :   201c:   vmovups %ymm1,0x320(%rsp)
+      54 :   2025:   vmovups 0x300(%rsp),%ymm1
+       0 :   202e:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      12 :   2033:   vmovups (%rsp),%ymm0
+       0 :   2038:   vmovups %ymm1,0x300(%rsp)
+      21 :   2041:   vmovups 0x2e0(%rsp),%ymm1
+         : 677  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       3 :   204a:   vmaskmovps 0x204(%rdi,%rax,4),%ymm0,%ymm0
+         : 679  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2054:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      14 :   2059:   vmovups 0x80(%rsp),%ymm0
+      10 :   2062:   vmovups %ymm1,0x2e0(%rsp)
+      43 :   206b:   vmovups 0x2c0(%rsp),%ymm1
+         : 684  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   2074:   vmaskmovps 0x224(%rdi,%rax,4),%ymm0,%ymm0
+         : 686  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       8 :   207e:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      36 :   2083:   vmovups 0xa0(%rsp),%ymm0
+       0 :   208c:   vmovups %ymm1,0x2c0(%rsp)
+      60 :   2095:   vmovups 0x20(%rsp),%ymm1
+         : 691  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       0 :   209b:   vmaskmovps 0x264(%rdi,%rax,4),%ymm0,%ymm0
+       7 :   20a5:   vmaskmovps 0x244(%rdi,%rax,4),%ymm1,%ymm4
+       4 :   20af:   vmovups 0x2a0(%rsp),%ymm1
+         : 695  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   20b8:   vfmadd231ps %ymm4,%ymm3,%ymm1
+         : 697  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      35 :   20bd:   vmaskmovps 0x2c4(%rdi,%rax,4),%ymm11,%ymm4
+         : 699  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       4 :   20c7:   vmaskmovps 0x2c8(%rdi,%rax,4),%ymm11,%ymm11
+       2 :   20d1:   vmovups %ymm1,0x2a0(%rsp)
+      62 :   20da:   vmovups 0x360(%rsp),%ymm1
+         : 703  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   20e3:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 705  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      19 :   20e8:   vmaskmovps 0x284(%rdi,%rax,4),%ymm14,%ymm0
+         : 707  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       2 :   20f2:   vmaskmovps 0x288(%rdi,%rax,4),%ymm14,%ymm14
+       0 :   20fc:   vmovups %ymm1,0x360(%rsp)
+      46 :   2105:   vmovups 0x200(%rsp),%ymm1
+         : 711  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   210e:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 713  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      16 :   2113:   vmaskmovps 0x2a4(%rdi,%rax,4),%ymm13,%ymm0
+         : 715  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       3 :   211d:   vmaskmovps 0x2a8(%rdi,%rax,4),%ymm13,%ymm13
+       4 :   2127:   vmovups %ymm1,0x200(%rsp)
+      46 :   2130:   vmovups 0x1e0(%rsp),%ymm1
+         : 719  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2139:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 721  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      22 :   213e:   vmaskmovps 0x2e4(%rdi,%rax,4),%ymm12,%ymm0
+         : 723  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       6 :   2148:   vmaskmovps 0x2e8(%rdi,%rax,4),%ymm12,%ymm12
+       3 :   2152:   vmovups %ymm1,0x1e0(%rsp)
+      40 :   215b:   vmovups 0x280(%rsp),%ymm1
+         : 727  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2164:   vfmadd231ps %ymm4,%ymm3,%ymm1
+         : 729  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      17 :   2169:   vmaskmovps 0x344(%rdi,%rax,4),%ymm7,%ymm4
+       6 :   2173:   vmovups %ymm1,0x280(%rsp)
+      34 :   217c:   vmovups 0x540(%rsp),%ymm1
+         : 733  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2185:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 735  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      12 :   218a:   vmaskmovps 0x304(%rdi,%rax,4),%ymm10,%ymm0
+         : 737  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       1 :   2194:   vmaskmovps 0x308(%rdi,%rax,4),%ymm10,%ymm10
+       4 :   219e:   vmovups %ymm1,0x540(%rsp)
+      34 :   21a7:   vmovups 0x500(%rsp),%ymm1
+         : 741  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   21b0:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 743  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      20 :   21b5:   vmaskmovps 0x324(%rdi,%rax,4),%ymm9,%ymm0
+         : 745  e = tl.load(src + i + 2, mask=interior, other=0.0)
+      12 :   21bf:   vmaskmovps 0x328(%rdi,%rax,4),%ymm9,%ymm9
+       8 :   21c9:   vmovups %ymm1,0x500(%rsp)
+      41 :   21d2:   vmovups 0x580(%rsp),%ymm1
+         : 749  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   21db:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 751  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      32 :   21e0:   vmaskmovps 0x364(%rdi,%rax,4),%ymm8,%ymm0
+         : 753  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       7 :   21ea:   vmaskmovps 0x368(%rdi,%rax,4),%ymm8,%ymm8
+      12 :   21f4:   vmovups %ymm1,0x580(%rsp)
+      40 :   21fd:   vmovups 0x4c0(%rsp),%ymm1
+         : 757  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       3 :   2206:   vfmadd231ps %ymm4,%ymm3,%ymm1
+         : 759  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      13 :   220b:   vmaskmovps 0x3c4(%rdi,%rax,4),%ymm2,%ymm4
+      11 :   2215:   vmovups %ymm1,0x4c0(%rsp)
+      28 :   221e:   vmovups 0x4a0(%rsp),%ymm1
+         : 763  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2227:   vfmadd231ps %ymm4,%ymm3,%ymm15
+      19 :   222c:   vmovups 0x760(%rsp),%ymm4
+       3 :   2235:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 767  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      13 :   223a:   vmaskmovps 0x384(%rdi,%rax,4),%ymm6,%ymm0
+       0 :   2244:   vmovups %ymm1,0x4a0(%rsp)
+      41 :   224d:   vmovups 0x480(%rsp),%ymm1
+         : 771  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2256:   vfmadd231ps %ymm0,%ymm3,%ymm1
+         : 773  d = tl.load(src + i + 1, mask=interior, other=0.0)
+      17 :   225b:   vmaskmovps 0x3a4(%rdi,%rax,4),%ymm5,%ymm0
+       2 :   2265:   vmovups %ymm1,0x480(%rsp)
+      51 :   226e:   vmovups 0x420(%rsp),%ymm1
+         : 777  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2277:   vfmadd231ps %ymm0,%ymm3,%ymm1
+      16 :   227c:   vmovups %ymm1,0x420(%rsp)
+      51 :   2285:   vmovups 0x720(%rsp),%ymm1
+         : 781  d = tl.load(src + i + 1, mask=interior, other=0.0)
+       3 :   228e:   vmaskmovps 0x3e4(%rdi,%rax,4),%ymm1,%ymm0
+         : 783  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+      99 :   2298:   vfmadd231ps %ymm0,%ymm3,%ymm4
+     127 :   229d:   vmovups 0x3e0(%rsp),%ymm0
+         : 786  e = tl.load(src + i + 2, mask=interior, other=0.0)
+       0 :   22a6:   vmaskmovps 0x8(%rdi,%rax,4),%ymm0,%ymm0
+       0 :   22ad:   vmovups %ymm0,0x3e0(%rsp)
+       1 :   22b6:   vmovups 0x3c0(%rsp),%ymm0
+       0 :   22bf:   vmaskmovps 0x28(%rdi,%rax,4),%ymm0,%ymm0
+       7 :   22c6:   vmovups %ymm0,0x3c0(%rsp)
+       3 :   22cf:   vmovups 0x3a0(%rsp),%ymm0
+       0 :   22d8:   vmaskmovps 0x48(%rdi,%rax,4),%ymm0,%ymm0
+      28 :   22df:   vmovups %ymm0,0x3a0(%rsp)
+       3 :   22e8:   vmovups 0x180(%rsp),%ymm0
+       0 :   22f1:   vmaskmovps 0x68(%rdi,%rax,4),%ymm0,%ymm0
+       3 :   22f8:   vmovups %ymm0,0x180(%rsp)
+       2 :   2301:   vmovups 0x160(%rsp),%ymm0
+       3 :   230a:   vmaskmovps 0x88(%rdi,%rax,4),%ymm0,%ymm0
+       1 :   2314:   vmovups %ymm0,0x160(%rsp)
+       8 :   231d:   vmovups 0xe0(%rsp),%ymm0
+      27 :   2326:   vmaskmovps 0xa8(%rdi,%rax,4),%ymm0,%ymm0
+       9 :   2330:   vmovups %ymm0,0xe0(%rsp)
+      12 :   2339:   vmovups 0x100(%rsp),%ymm0
+       0 :   2342:   vmaskmovps 0xc8(%rdi,%rax,4),%ymm0,%ymm0
+       2 :   234c:   vmovups %ymm0,0x100(%rsp)
+      10 :   2355:   vmovups 0xc0(%rsp),%ymm0
+       1 :   235e:   vmaskmovps 0xe8(%rdi,%rax,4),%ymm0,%ymm0
+      11 :   2368:   vmovups %ymm0,0xc0(%rsp)
+      35 :   2371:   vmovups 0x140(%rsp),%ymm0
+       0 :   237a:   vmaskmovps 0x108(%rdi,%rax,4),%ymm0,%ymm0
+       5 :   2384:   vmovups %ymm0,0x140(%rsp)
+      25 :   238d:   vmovups -0x60(%rsp),%ymm0
+       4 :   2393:   vmaskmovps 0x128(%rdi,%rax,4),%ymm0,%ymm0
+      15 :   239d:   vmovups %ymm0,-0x60(%rsp)
+      35 :   23a3:   vmovups -0x80(%rsp),%ymm0
+       1 :   23a9:   vmaskmovps 0x148(%rdi,%rax,4),%ymm0,%ymm0
+      17 :   23b3:   vmovups %ymm0,-0x80(%rsp)
+      39 :   23b9:   vmovups -0x20(%rsp),%ymm0
+       5 :   23bf:   vmaskmovps 0x168(%rdi,%rax,4),%ymm0,%ymm0
+      32 :   23c9:   vmovups %ymm0,-0x20(%rsp)
+      28 :   23cf:   vmovups 0x120(%rsp),%ymm0
+       8 :   23d8:   vmaskmovps 0x188(%rdi,%rax,4),%ymm0,%ymm0
+       7 :   23e2:   vmovups %ymm0,0x120(%rsp)
+      42 :   23eb:   vmovups 0x40(%rsp),%ymm0
+       3 :   23f1:   vmaskmovps 0x1a8(%rdi,%rax,4),%ymm0,%ymm0
+      11 :   23fb:   vmovups %ymm0,0x40(%rsp)
+      47 :   2401:   vmovups -0x40(%rsp),%ymm0
+       1 :   2407:   vmaskmovps 0x1c8(%rdi,%rax,4),%ymm0,%ymm0
+       8 :   2411:   vmovups %ymm0,-0x40(%rsp)
+      27 :   2417:   vmovups 0x60(%rsp),%ymm0
+       4 :   241d:   vmaskmovps 0x1e8(%rdi,%rax,4),%ymm0,%ymm0
+      14 :   2427:   vmovups %ymm0,0x60(%rsp)
+      44 :   242d:   vmovups (%rsp),%ymm0
+       0 :   2432:   vmaskmovps 0x208(%rdi,%rax,4),%ymm0,%ymm0
+       4 :   243c:   vmovups %ymm0,(%rsp)
+      31 :   2441:   vmovups 0x80(%rsp),%ymm0
+       5 :   244a:   vmaskmovps 0x228(%rdi,%rax,4),%ymm0,%ymm0
+      12 :   2454:   vmovups %ymm0,0x80(%rsp)
+      40 :   245d:   vmovups 0x20(%rsp),%ymm0
+       3 :   2463:   vmaskmovps 0x248(%rdi,%rax,4),%ymm0,%ymm0
+       9 :   246d:   vmovups %ymm0,0x20(%rsp)
+      30 :   2473:   vmovups 0xa0(%rsp),%ymm0
+       5 :   247c:   vmaskmovps 0x268(%rdi,%rax,4),%ymm0,%ymm0
+      18 :   2486:   vmovups %ymm0,0xa0(%rsp)
+      45 :   248f:   vmaskmovps 0x348(%rdi,%rax,4),%ymm7,%ymm0
+       4 :   2499:   vmaskmovps 0x3a8(%rdi,%rax,4),%ymm5,%ymm7
+       3 :   24a3:   vmovdqu 0x780(%rsp),%ymm5
+         : 849  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       1 :   24ac:   vpor   0xb4c(%rip),%ymm5,%ymm3        # 3000 <_fini+0x610>
+      20 :   24b4:   vmovups %ymm0,0x1c0(%rsp)
+         : 852  e = tl.load(src + i + 2, mask=interior, other=0.0)
+      11 :   24bd:   vmaskmovps 0x388(%rdi,%rax,4),%ymm6,%ymm0
+      16 :   24c7:   vmaskmovps 0x3c8(%rdi,%rax,4),%ymm2,%ymm6
+      15 :   24d1:   vmovups %ymm0,0x1a0(%rsp)
+      22 :   24da:   vmaskmovps 0x3e8(%rdi,%rax,4),%ymm1,%ymm0
+         : 857  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       9 :   24e4:   vbroadcastss 0x131f(%rip),%ymm1        # 380c <_fini+0xe1c>
+       3 :   24ed:   vmovups 0x1a0(%rsp),%ymm2
+     156 :   24f6:   vaddps %ymm4,%ymm0,%ymm0
+       1 :   24fa:   vdivps %ymm1,%ymm0,%ymm4
+         : 862  tl.store(dst + i, value, mask=i < N)
+     231 :   24fe:   vpbroadcastd 0x1309(%rip),%ymm0        # 3810 <_fini+0xe20>
+       0 :   2507:   vpcmpgtd %ymm3,%ymm0,%ymm3
+       0 :   250b:   vmaskmovps %ymm4,%ymm3,0x3e0(%rsi,%rax,4)
+         : 866  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     536 :   2515:   vaddps %ymm6,%ymm15,%ymm3
+         : 868  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   2519:   vpor   0xaff(%rip),%ymm5,%ymm4        # 3020 <_fini+0x630>
+         : 870  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     180 :   2521:   vdivps %ymm1,%ymm3,%ymm3
+         : 872  tl.store(dst + i, value, mask=i < N)
+       0 :   2525:   vpcmpgtd %ymm4,%ymm0,%ymm4
+       7 :   2529:   vmaskmovps %ymm3,%ymm4,0x3c0(%rsi,%rax,4)
+         : 875  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     542 :   2533:   vaddps 0x420(%rsp),%ymm7,%ymm3
+         : 877  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       4 :   253c:   vpor   0xafc(%rip),%ymm5,%ymm4        # 3040 <_fini+0x650>
+         : 879  tl.store(dst + i, value, mask=i < N)
+       2 :   2544:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 881  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2548:   vdivps %ymm1,%ymm3,%ymm3
+         : 883  tl.store(dst + i, value, mask=i < N)
+      34 :   254c:   vmaskmovps %ymm3,%ymm4,0x3a0(%rsi,%rax,4)
+         : 885  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     310 :   2556:   vaddps 0x480(%rsp),%ymm2,%ymm3
+         : 887  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      15 :   255f:   vpor   0xaf9(%rip),%ymm5,%ymm4        # 3060 <_fini+0x670>
+       0 :   2567:   vmovups 0x1c0(%rsp),%ymm2
+         : 890  tl.store(dst + i, value, mask=i < N)
+     149 :   2570:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 892  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2574:   vdivps %ymm1,%ymm3,%ymm3
+         : 894  tl.store(dst + i, value, mask=i < N)
+      61 :   2578:   vmaskmovps %ymm3,%ymm4,0x380(%rsi,%rax,4)
+         : 896  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     265 :   2582:   vaddps 0x4a0(%rsp),%ymm8,%ymm3
+         : 898  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      12 :   258b:   vpor   0xaed(%rip),%ymm5,%ymm4        # 3080 <_fini+0x690>
+         : 900  tl.store(dst + i, value, mask=i < N)
+       0 :   2593:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 902  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2597:   vdivps %ymm1,%ymm3,%ymm3
+         : 904  tl.store(dst + i, value, mask=i < N)
+      46 :   259b:   vmaskmovps %ymm3,%ymm4,0x360(%rsi,%rax,4)
+         : 906  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     454 :   25a5:   vaddps 0x4c0(%rsp),%ymm2,%ymm3
+         : 908  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       3 :   25ae:   vpor   0xaea(%rip),%ymm5,%ymm4        # 30a0 <_fini+0x6b0>
+       0 :   25b6:   vmovups 0xa0(%rsp),%ymm2
+         : 911  tl.store(dst + i, value, mask=i < N)
+       0 :   25bf:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 913  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   25c3:   vdivps %ymm1,%ymm3,%ymm3
+         : 915  tl.store(dst + i, value, mask=i < N)
+      45 :   25c7:   vmaskmovps %ymm3,%ymm4,0x340(%rsi,%rax,4)
+         : 917  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     326 :   25d1:   vaddps 0x580(%rsp),%ymm9,%ymm3
+         : 919  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+     138 :   25da:   vpor   0xade(%rip),%ymm5,%ymm4        # 30c0 <_fini+0x6d0>
+         : 921  tl.store(dst + i, value, mask=i < N)
+       3 :   25e2:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 923  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   25e6:   vdivps %ymm1,%ymm3,%ymm3
+         : 925  tl.store(dst + i, value, mask=i < N)
+     130 :   25ea:   vmaskmovps %ymm3,%ymm4,0x320(%rsi,%rax,4)
+         : 927  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     781 :   25f4:   vaddps 0x500(%rsp),%ymm10,%ymm3
+         : 929  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       5 :   25fd:   vpor   0xadb(%rip),%ymm5,%ymm4        # 30e0 <_fini+0x6f0>
+         : 931  tl.store(dst + i, value, mask=i < N)
+       0 :   2605:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 933  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2609:   vdivps %ymm1,%ymm3,%ymm3
+         : 935  tl.store(dst + i, value, mask=i < N)
+      12 :   260d:   vmaskmovps %ymm3,%ymm4,0x300(%rsi,%rax,4)
+         : 937  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     312 :   2617:   vaddps 0x540(%rsp),%ymm12,%ymm3
+         : 939  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       9 :   2620:   vpor   0xad8(%rip),%ymm5,%ymm4        # 3100 <_fini+0x710>
+         : 941  tl.store(dst + i, value, mask=i < N)
+       1 :   2628:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 943  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   262c:   vdivps %ymm1,%ymm3,%ymm3
+         : 945  tl.store(dst + i, value, mask=i < N)
+      89 :   2630:   vmaskmovps %ymm3,%ymm4,0x2e0(%rsi,%rax,4)
+         : 947  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     373 :   263a:   vaddps 0x280(%rsp),%ymm11,%ymm3
+         : 949  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   2643:   vpor   0xad5(%rip),%ymm5,%ymm4        # 3120 <_fini+0x730>
+         : 951  tl.store(dst + i, value, mask=i < N)
+       1 :   264b:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 953  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   264f:   vdivps %ymm1,%ymm3,%ymm3
+         : 955  tl.store(dst + i, value, mask=i < N)
+      16 :   2653:   vmaskmovps %ymm3,%ymm4,0x2c0(%rsi,%rax,4)
+         : 957  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     247 :   265d:   vaddps 0x1e0(%rsp),%ymm13,%ymm3
+         : 959  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   2666:   vpor   0xad2(%rip),%ymm5,%ymm4        # 3140 <_fini+0x750>
+         : 961  tl.store(dst + i, value, mask=i < N)
+       0 :   266e:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 963  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2672:   vdivps %ymm1,%ymm3,%ymm3
+         : 965  tl.store(dst + i, value, mask=i < N)
+      70 :   2676:   vmaskmovps %ymm3,%ymm4,0x2a0(%rsi,%rax,4)
+         : 967  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     381 :   2680:   vaddps 0x200(%rsp),%ymm14,%ymm3
+         : 969  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      12 :   2689:   vpor   0xacf(%rip),%ymm5,%ymm4        # 3160 <_fini+0x770>
+         : 971  tl.store(dst + i, value, mask=i < N)
+       0 :   2691:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 973  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2695:   vdivps %ymm1,%ymm3,%ymm3
+         : 975  tl.store(dst + i, value, mask=i < N)
+      12 :   2699:   vmaskmovps %ymm3,%ymm4,0x280(%rsi,%rax,4)
+         : 977  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     257 :   26a3:   vaddps 0x360(%rsp),%ymm2,%ymm3
+         : 979  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       5 :   26ac:   vpor   0xacc(%rip),%ymm5,%ymm4        # 3180 <_fini+0x790>
+       5 :   26b4:   vmovups 0x20(%rsp),%ymm2
+         : 982  tl.store(dst + i, value, mask=i < N)
+       0 :   26ba:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 984  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   26be:   vdivps %ymm1,%ymm3,%ymm3
+         : 986  tl.store(dst + i, value, mask=i < N)
+      72 :   26c2:   vmaskmovps %ymm3,%ymm4,0x260(%rsi,%rax,4)
+         : 988  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     520 :   26cc:   vaddps 0x2a0(%rsp),%ymm2,%ymm3
+         : 990  i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       3 :   26d5:   vpor   0xac3(%rip),%ymm5,%ymm4        # 31a0 <_fini+0x7b0>
+       2 :   26dd:   vmovups 0x80(%rsp),%ymm2
+         : 993  tl.store(dst + i, value, mask=i < N)
+     174 :   26e6:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 995  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   26ea:   vdivps %ymm1,%ymm3,%ymm3
+         : 997  tl.store(dst + i, value, mask=i < N)
+      11 :   26ee:   vmaskmovps %ymm3,%ymm4,0x240(%rsi,%rax,4)
+         : 999  value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     236 :   26f8:   vaddps 0x2c0(%rsp),%ymm2,%ymm3
+         : 1001 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      12 :   2701:   vpor   0xab7(%rip),%ymm5,%ymm4        # 31c0 <_fini+0x7d0>
+       2 :   2709:   vmovups (%rsp),%ymm2
+         : 1004 tl.store(dst + i, value, mask=i < N)
+       3 :   270e:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1006 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2712:   vdivps %ymm1,%ymm3,%ymm3
+         : 1008 tl.store(dst + i, value, mask=i < N)
+     111 :   2716:   vmaskmovps %ymm3,%ymm4,0x220(%rsi,%rax,4)
+         : 1010 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     462 :   2720:   vaddps 0x2e0(%rsp),%ymm2,%ymm3
+         : 1012 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   2729:   vpor   0xaaf(%rip),%ymm5,%ymm4        # 31e0 <_fini+0x7f0>
+       1 :   2731:   vmovups 0x60(%rsp),%ymm2
+         : 1015 tl.store(dst + i, value, mask=i < N)
+      58 :   2737:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1017 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   273b:   vdivps %ymm1,%ymm3,%ymm3
+         : 1019 tl.store(dst + i, value, mask=i < N)
+       9 :   273f:   vmaskmovps %ymm3,%ymm4,0x200(%rsi,%rax,4)
+         : 1021 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     303 :   2749:   vaddps 0x300(%rsp),%ymm2,%ymm3
+         : 1023 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       5 :   2752:   vpor   0xaa6(%rip),%ymm5,%ymm4        # 3200 <_fini+0x810>
+       3 :   275a:   vmovups -0x40(%rsp),%ymm2
+         : 1026 tl.store(dst + i, value, mask=i < N)
+       1 :   2760:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1028 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2764:   vdivps %ymm1,%ymm3,%ymm3
+         : 1030 tl.store(dst + i, value, mask=i < N)
+      92 :   2768:   vmaskmovps %ymm3,%ymm4,0x1e0(%rsi,%rax,4)
+         : 1032 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     470 :   2772:   vaddps 0x320(%rsp),%ymm2,%ymm3
+         : 1034 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       2 :   277b:   vpor   0xa9d(%rip),%ymm5,%ymm4        # 3220 <_fini+0x830>
+      32 :   2783:   vmovups 0x40(%rsp),%ymm2
+         : 1037 tl.store(dst + i, value, mask=i < N)
+       0 :   2789:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1039 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       7 :   278d:   vdivps %ymm1,%ymm3,%ymm3
+         : 1041 tl.store(dst + i, value, mask=i < N)
+      13 :   2791:   vmaskmovps %ymm3,%ymm4,0x1c0(%rsi,%rax,4)
+         : 1043 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     508 :   279b:   vaddps 0x220(%rsp),%ymm2,%ymm3
+         : 1045 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   27a4:   vpor   0xa94(%rip),%ymm5,%ymm4        # 3240 <_fini+0x850>
+       5 :   27ac:   vmovups 0x120(%rsp),%ymm2
+         : 1048 tl.store(dst + i, value, mask=i < N)
+       1 :   27b5:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1050 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   27b9:   vdivps %ymm1,%ymm3,%ymm3
+         : 1052 tl.store(dst + i, value, mask=i < N)
+      16 :   27bd:   vmaskmovps %ymm3,%ymm4,0x1a0(%rsi,%rax,4)
+         : 1054 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     384 :   27c7:   vaddps 0x340(%rsp),%ymm2,%ymm3
+         : 1056 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       9 :   27d0:   vpor   0xa88(%rip),%ymm5,%ymm4        # 3260 <_fini+0x870>
+       5 :   27d8:   vmovups -0x20(%rsp),%ymm2
+         : 1059 tl.store(dst + i, value, mask=i < N)
+     184 :   27de:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1061 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   27e2:   vdivps %ymm1,%ymm3,%ymm3
+         : 1063 tl.store(dst + i, value, mask=i < N)
+     126 :   27e6:   vmaskmovps %ymm3,%ymm4,0x180(%rsi,%rax,4)
+         : 1065 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     287 :   27f0:   vaddps 0x380(%rsp),%ymm2,%ymm3
+         : 1067 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       4 :   27f9:   vpor   0xa7f(%rip),%ymm5,%ymm4        # 3280 <_fini+0x890>
+       2 :   2801:   vmovups -0x80(%rsp),%ymm2
+         : 1070 tl.store(dst + i, value, mask=i < N)
+       0 :   2807:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1072 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   280b:   vdivps %ymm1,%ymm3,%ymm3
+         : 1074 tl.store(dst + i, value, mask=i < N)
+      59 :   280f:   vmaskmovps %ymm3,%ymm4,0x160(%rsi,%rax,4)
+         : 1076 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     509 :   2819:   vaddps 0x240(%rsp),%ymm2,%ymm3
+         : 1078 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   2822:   vpor   0xa76(%rip),%ymm5,%ymm4        # 32a0 <_fini+0x8b0>
+       3 :   282a:   vmovups -0x60(%rsp),%ymm2
+         : 1081 tl.store(dst + i, value, mask=i < N)
+      66 :   2830:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1083 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2834:   vdivps %ymm1,%ymm3,%ymm3
+         : 1085 tl.store(dst + i, value, mask=i < N)
+      50 :   2838:   vmaskmovps %ymm3,%ymm4,0x140(%rsi,%rax,4)
+         : 1087 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     262 :   2842:   vaddps 0x260(%rsp),%ymm2,%ymm3
+         : 1089 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   284b:   vpor   0xa6d(%rip),%ymm5,%ymm4        # 32c0 <_fini+0x8d0>
+       3 :   2853:   vmovups 0x140(%rsp),%ymm2
+         : 1092 tl.store(dst + i, value, mask=i < N)
+       0 :   285c:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1094 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       2 :   2860:   vdivps %ymm1,%ymm3,%ymm3
+         : 1096 tl.store(dst + i, value, mask=i < N)
+     105 :   2864:   vmaskmovps %ymm3,%ymm4,0x120(%rsi,%rax,4)
+         : 1098 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     504 :   286e:   vaddps 0x4e0(%rsp),%ymm2,%ymm3
+         : 1100 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       1 :   2877:   vpor   0xa61(%rip),%ymm5,%ymm4        # 32e0 <_fini+0x8f0>
+       0 :   287f:   vmovups 0xc0(%rsp),%ymm2
+         : 1103 tl.store(dst + i, value, mask=i < N)
+       0 :   2888:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1105 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   288c:   vdivps %ymm1,%ymm3,%ymm3
+         : 1107 tl.store(dst + i, value, mask=i < N)
+      27 :   2890:   vmaskmovps %ymm3,%ymm4,0x100(%rsi,%rax,4)
+         : 1109 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     260 :   289a:   vaddps 0x520(%rsp),%ymm2,%ymm3
+         : 1111 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      11 :   28a3:   vpor   0xa55(%rip),%ymm5,%ymm4        # 3300 <_fini+0x910>
+      11 :   28ab:   vmovups 0x100(%rsp),%ymm2
+         : 1114 tl.store(dst + i, value, mask=i < N)
+       0 :   28b4:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1116 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   28b8:   vdivps %ymm1,%ymm3,%ymm3
+         : 1118 tl.store(dst + i, value, mask=i < N)
+      40 :   28bc:   vmaskmovps %ymm3,%ymm4,0xe0(%rsi,%rax,4)
+         : 1120 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     540 :   28c6:   vaddps 0x560(%rsp),%ymm2,%ymm3
+         : 1122 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       8 :   28cf:   vpor   0xa49(%rip),%ymm5,%ymm4        # 3320 <_fini+0x930>
+       0 :   28d7:   vmovups 0xe0(%rsp),%ymm2
+         : 1125 tl.store(dst + i, value, mask=i < N)
+       1 :   28e0:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1127 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   28e4:   vdivps %ymm1,%ymm3,%ymm3
+         : 1129 tl.store(dst + i, value, mask=i < N)
+      37 :   28e8:   vmaskmovps %ymm3,%ymm4,0xc0(%rsi,%rax,4)
+         : 1131 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     313 :   28f2:   vaddps 0x5a0(%rsp),%ymm2,%ymm3
+         : 1133 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       3 :   28fb:   vpor   0xa3d(%rip),%ymm5,%ymm4        # 3340 <_fini+0x950>
+       4 :   2903:   vmovups 0x160(%rsp),%ymm2
+         : 1136 tl.store(dst + i, value, mask=i < N)
+       0 :   290c:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1138 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2910:   vdivps %ymm1,%ymm3,%ymm3
+         : 1140 tl.store(dst + i, value, mask=i < N)
+      60 :   2914:   vmaskmovps %ymm3,%ymm4,0xa0(%rsi,%rax,4)
+         : 1142 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     537 :   291e:   vaddps 0x5c0(%rsp),%ymm2,%ymm3
+         : 1144 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       0 :   2927:   vpor   0xa31(%rip),%ymm5,%ymm4        # 3360 <_fini+0x970>
+       0 :   292f:   vmovups 0x180(%rsp),%ymm2
+         : 1147 tl.store(dst + i, value, mask=i < N)
+       0 :   2938:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1149 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   293c:   vdivps %ymm1,%ymm3,%ymm3
+         : 1151 tl.store(dst + i, value, mask=i < N)
+      19 :   2940:   vmaskmovps %ymm3,%ymm4,0x80(%rsi,%rax,4)
+         : 1153 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     305 :   294a:   vaddps 0x5e0(%rsp),%ymm2,%ymm3
+         : 1155 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   2953:   vpor   0xa25(%rip),%ymm5,%ymm4        # 3380 <_fini+0x990>
+       4 :   295b:   vmovups 0x3a0(%rsp),%ymm2
+         : 1158 tl.store(dst + i, value, mask=i < N)
+       0 :   2964:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1160 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       1 :   2968:   vdivps %ymm1,%ymm3,%ymm3
+         : 1162 tl.store(dst + i, value, mask=i < N)
+      65 :   296c:   vmaskmovps %ymm3,%ymm4,0x60(%rsi,%rax,4)
+         : 1164 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     518 :   2973:   vaddps 0x600(%rsp),%ymm2,%ymm3
+         : 1166 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       1 :   297c:   vpor   0xa1c(%rip),%ymm5,%ymm4        # 33a0 <_fini+0x9b0>
+       0 :   2984:   vmovups 0x3c0(%rsp),%ymm2
+         : 1169 tl.store(dst + i, value, mask=i < N)
+       0 :   298d:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1171 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   2991:   vdivps %ymm1,%ymm3,%ymm3
+         : 1173 tl.store(dst + i, value, mask=i < N)
+      24 :   2995:   vmaskmovps %ymm3,%ymm4,0x40(%rsi,%rax,4)
+         : 1175 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     310 :   299c:   vaddps 0x620(%rsp),%ymm2,%ymm3
+         : 1177 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+       7 :   29a5:   vpor   0xa13(%rip),%ymm5,%ymm4        # 33c0 <_fini+0x9d0>
+      10 :   29ad:   vmovups 0x3e0(%rsp),%ymm2
+         : 1180 tl.store(dst + i, value, mask=i < N)
+       1 :   29b6:   vpcmpgtd %ymm4,%ymm0,%ymm4
+         : 1182 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   29ba:   vdivps %ymm1,%ymm3,%ymm3
+         : 1184 tl.store(dst + i, value, mask=i < N)
+      45 :   29be:   vmaskmovps %ymm3,%ymm4,0x20(%rsi,%rax,4)
+         : 1186 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+     578 :   29c5:   vaddps 0x640(%rsp),%ymm2,%ymm4
+         : 1188 i = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+      50 :   29ce:   vpor   0xa0a(%rip),%ymm5,%ymm2        # 33e0 <_fini+0x9f0>
+         : 1190 tl.store(dst + i, value, mask=i < N)
+       1 :   29d6:   vpcmpgtd %ymm2,%ymm0,%ymm0
+         : 1192 value = (a + 2.0 * b + 3.0 * c + 2.0 * d + e) / 9.0
+       0 :   29da:   vdivps %ymm1,%ymm4,%ymm1
+         : 1194 tl.store(dst + i, value, mask=i < N)
+     235 :   29de:   vmaskmovps %ymm1,%ymm0,(%rsi,%rax,4)
+         : 1196 def smooth5_kernel(src, dst, N: tl.constexpr, BLOCK: tl.constexpr):
+     277 :   29e4:   add    $0x7a8,%rsp
+       4 :   29eb:   vzeroupper
+       0 :   29ee:   retq
