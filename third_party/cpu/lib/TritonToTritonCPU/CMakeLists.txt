@@ -9,6 +9,8 @@ add_triton_library(TritonToTritonCPU
     ScalarizeInterface.cpp
     ScalarizeUsingForOps.cpp
     ConvertMemoryOps.cpp
+    HumphreysSplitIntegerAddition.cpp
+    HumphreyChunkVectorConversion.cpp
     ConvertPtrOps.cpp
     ConvertReductionOp.cpp
     ConvertScanOp.cpp

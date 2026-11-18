@@ -96,6 +96,9 @@ void init_triton_cpu_passes_ttcpuir(py::module_ &m) {
     pm.addPass(
         mlir::triton::cpu::createScalarizeUsingForOpPass(skip_gather_scatter));
   });
+  m.def("add_Humphrey_Pass", [](mlir::PassManager &pm) {
+    pm.addPass(mlir::triton::cpu::createHumphreyChunkVectorConversion());
+  });
   m.def("add_convert_memory_ops", [](mlir::PassManager &pm,
                                      bool use_gather_scatter,
                                      bool assume_in_bounds) {

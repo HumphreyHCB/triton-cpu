@@ -27,6 +27,30 @@ def ConvertMemoryOps : Pass<"triton-cpu-convert-memory-ops", "mlir::ModuleOp"> {
                              "mlir::triton::cpu::TritonCPUDialect"];
 }
 
+def HumphreysSplitIntegerAddition : Pass<"HumphreySplitIntergerPass", "mlir::ModuleOp"> {
+    let summary = "Humphrey's Pass that SPlits Intergers, only to prove we cna build a pass.";
+    let description = [{
+
+    }];
+
+
+    let constructor = "mlir::triton::cpu::createHumphreysSplitIntegerAddition()";
+
+    let dependentDialects = ["mlir::arith::ArithDialect"];
+}
+
+def HumphreyChunkVectorConversion : Pass<"HumphreyChunkVectorConversion", "mlir::ModuleOp"> {
+    let summary = "Humphrey's Pass that Chunk Vector to reduce Spills";
+    let description = [{
+
+    }];
+
+
+    let constructor = "mlir::triton::cpu::createHumphreyChunkVectorConversion()";
+
+    let dependentDialects = ["mlir::arith::ArithDialect","mlir::vector::VectorDialect"];
+}
+
 def ConvertElementwiseOps : Pass<"triton-cpu-convert-elementwise-ops", "mlir::ModuleOp"> {
     let summary = "Convert elementwise ops.";
     let description = [{

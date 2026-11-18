@@ -163,11 +163,14 @@ struct LoadOpConversion : public MemoryOpConversion<triton::LoadOp> {
     auto ptr = loadOp.getPtr();
     auto axisInfo = axisAnalysis.getAxisInfo(ptr);
     if (isContiguousRowMajorAccess(axisInfo, loadOp)) {
+      loadOp.emitRemark("loadOp is Contiguous Row Major Access");
       return lowerToContiguousRowMajor(loadOp, rewriter);
     }
     if (useGatherScatter && succeeded(lowerToGather(loadOp, rewriter))) {
+      loadOp.emitRemark("loadOp is is gather");
       return success();
     }
+    loadOp.emitRemark("loadOp is Scalar Load");
     return lowerToScalarLoads(loadOp, rewriter);
   }
 

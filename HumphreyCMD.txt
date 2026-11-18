@@ -1,0 +1,162 @@
+
+#!/usr/bin/env bash
+
+# Run these commands from the Triton-CPU repository root with the Python virtual environment activated.
+
+
+# ============================================================
+# 1. BUILDING TRITON-CPU
+# ============================================================
+
+# Configure CMake after adding new C++ source files, passes or CMake targets.
+cmake -S . -B build/cmake.linux-x86_64-cpython-3.12
+
+# Incrementally rebuild Triton-CPU using all available parallel build workers.
+cmake --build build/cmake.linux-x86_64-cpython-3.12 --parallel
+
+
+# ============================================================
+# 2. RUNNING THE WORKLOAD
+# ============================================================
+
+# Run the original smoothing kernel and verify its output.
+python learning/ch10_workload.py --size 1048583 --steps 1
+
+# Force recompilation so modifications to C++ MLIR passes are executed instead of cached code.
+TRITON_ALWAYS_COMPILE=1 python learning/ch10_workload.py --size 1048583 --steps 1
+
+# Run the original kernel repeatedly for a longer performance measurement.
+python learning/ch10_workload.py --size 1048583 --steps 5000
+
+# Test the reassociated arithmetic variant against the original implementation.
+python learning/ch10_balanced_workload.py --size 1048583 --steps 5000
+
+# Test the smaller-vector variant using 32-element chunks.
+python learning/ch10_chunked_workload.py --size 1048583 --steps 5000 --chunk 32
+
+
+# ============================================================
+# 3. DUMPING COMPILER INTERMEDIATE REPRESENTATIONS
+# ============================================================
+
+# Force compilation and save generated MLIR, LLVM IR and assembly under the chosen directory.
+TRITON_ALWAYS_COMPILE=1 TRITON_KERNEL_DUMP=1 TRITON_DUMP_DIR="$PWD/learning/ch10-lab/ir" \
+python learning/ch10_workload.py --size 1048583 --steps 1
+
+# Find the intermediate representations generated for the smoothing kernel.
+find learning/ch10-lab/ir -type f | sort
+
+# Locate the compiler's triton-opt binary.
+find build -type f -name triton-opt
+
+
+# ============================================================
+# 4. VISUALIZING MLIR GRAPHS
+# ============================================================
+
+# Create a DOT dependency graph from TTIR; the graph printer writes DOT to stderr.
+build/cmake.linux-x86_64-cpython-3.12/bin/triton-opt \
+  PATH_TO_KERNEL.ttir --view-op-graph -o /dev/null \
+  2> learning/ch10-lab/graphs/smooth5-ttir.dot
+
+# Render the DOT graph as an SVG using Graphviz.
+dot -Tsvg learning/ch10-lab/graphs/smooth5-ttir.dot \
+  -o learning/ch10-lab/graphs/smooth5-ttir.svg
+
+# Generate the equivalent graph from TTCIR to inspect lowered vector and arithmetic operations.
+build/cmake.linux-x86_64-cpython-3.12/bin/triton-opt \
+  PATH_TO_KERNEL.ttcir --view-op-graph -o /dev/null \
+  2> learning/ch10-lab/graphs/smooth5-ttcir.dot
+
+# Render the TTCIR dependency graph as an SVG.
+dot -Tsvg learning/ch10-lab/graphs/smooth5-ttcir.dot \
+  -o learning/ch10-lab/graphs/smooth5-ttcir.svg
+
+
+# ============================================================
+# 5. PERF: OVERALL CPU PERFORMANCE
+# ============================================================
+
+# Measure cycles, instructions and CPU time across three repetitions with four OpenMP threads.
+perf stat -r 3 -e task-clock,cycles,instructions -- \
+  env OMP_NUM_THREADS=4 \
+  python learning/ch10_workload.py --size 1048583 --steps 5000
+
+# Measure the balanced-arithmetic version using the same profiling configuration.
+perf stat -r 3 -e task-clock,cycles,instructions -- \
+  env OMP_NUM_THREADS=4 \
+  python learning/ch10_balanced_workload.py --size 1048583 --steps 5000
+
+# Measure the 32-element chunked version using the same profiling configuration.
+perf stat -r 3 -e task-clock,cycles,instructions -- \
+  env OMP_NUM_THREADS=4 \
+  python learning/ch10_chunked_workload.py --size 1048583 --steps 5000 --chunk 32
+
+
+# ============================================================
+# 6. PERF: SAMPLING AND HOTSPOT ANALYSIS
+# ============================================================
+
+# Collect a longer sampling profile at 500 samples/second with call graphs; -o selects the perf data filename.
+perf record -F 500 -g -o learning/ch10-lab/perf-long.data -- \
+  python learning/ch10_workload.py --size 1048583 --steps 50000
+
+# Display sampled functions and call stacks in terminal-friendly format without child-cost aggregation.
+perf report --stdio --no-children -g folded \
+  -i learning/ch10-lab/perf-long.data
+
+# Group sampled execution by shared library to identify time spent in JIT code versus runtime libraries.
+perf report --stdio --no-children --sort=dso \
+  -i learning/ch10-lab/perf-long.data
+
+
+# ============================================================
+# 7. PERF: INSTRUCTION-LEVEL ANALYSIS
+# ============================================================
+
+# Disassemble and annotate the JIT kernel using the symbol-preserving profile captured separately.
+perf annotate --stdio -n -M intel \
+  -i learning/ch10-lab/perf-symbols.data \
+  -s smooth5_kernel > learning/ch10-lab/asm_profile.txt
+
+# Open the annotated assembly to inspect sampled instruction addresses and vector instructions.
+less learning/ch10-lab/asm_profile.txt
+
+
+# ============================================================
+# 8. INSPECTING JIT-GENERATED SHARED LIBRARIES
+# ============================================================
+
+# Find Triton's cached compiled shared libraries for the smoothing kernel.
+find "$HOME/.triton/cache" -name 'smooth5_kernel.so'
+
+# List exported function symbols; replace PATH_TO_KERNEL_SO with the actual shared-library path.
+nm -D PATH_TO_KERNEL_SO
+
+# Check whether the JIT library contains debugging information and symbol tables.
+readelf -S PATH_TO_KERNEL_SO
+
+# Inspect native instructions and symbol names in the JIT-compiled library.
+objdump -d -C -M intel PATH_TO_KERNEL_SO
+
+# Look for SIMD operations and stack accesses that may indicate register spills.
+objdump -d -C -M intel PATH_TO_KERNEL_SO | grep -E 'vmov|vadd|vmul|vdiv|vfmadd|rsp'
+
+
+# ============================================================
+# 9. TESTING A CUSTOM MLIR PASS
+# ============================================================
+
+# Rebuild C++ changes to the pass implementation or its Python bindings.
+cmake --build build/cmake.linux-x86_64-cpython-3.12 --parallel
+
+# Recompile the original kernel to trigger the custom pass and print any llvm::errs() diagnostics.
+TRITON_ALWAYS_COMPILE=1 \
+python learning/ch10_workload.py --size 1048583 --steps 1
+
+# Recompile and dump the compiler output to inspect the IR after the custom pass runs.
+TRITON_ALWAYS_COMPILE=1 TRITON_KERNEL_DUMP=1 TRITON_DUMP_DIR="$PWD/learning/ch10-lab/ir" \
+python learning/ch10_workload.py --size 1048583 --steps 1
+
+# Confirm that the custom pass is exposed by Triton's native Python extension.
+python -c "from triton._C.libtriton import cpu; print([x for x in dir(cpu.passes.ttcpuir) if 'Humphrey' in x])"
